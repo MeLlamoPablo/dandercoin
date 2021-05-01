@@ -1,0 +1,22 @@
+{
+  "name": "@dandercoin/web-fns",
+  "scripts": {
+    "build": "webpack"
+  },
+  "dependencies": {
+    "common-tags": "^1.8.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.76",
+    "@types/common-tags": "^1.8.0",
+    "@types/node": "^15.0.1",
+    "@types/webpack": "^5.28.0",
+    "execa": "^5.0.0",
+    "express": "^4.17.1",
+    "ts-loader": "^9.1.1",
+    "typescript": "*",
+    "webpack": "^5.36.0",
+    "webpack-cli": "^4.6.0",
+    "zip-webpack-plugin": "^4.0.1"
+  }
+}

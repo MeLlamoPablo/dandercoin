@@ -1,0 +1,20 @@
+{
+	"name": "@dandercoin/core",
+	"scripts": {
+		"build": "truffle compile",
+		"devchain": "ganache-cli -a 2 -m 'pony column wait rubber admit control father glance mango engage recall orange' -h 0.0.0.0",
+		"migrate": "truffle migrate",
+		"migrate:testnet": "truffle migrate --network test",
+		"test": "truffle test"
+	},
+	"dependencies": {
+		"@openzeppelin/contracts": "^4.0.0"
+	},
+	"devDependencies": {
+		"@truffle/hdwallet-provider": "^1.2.6",
+		"@types/bn.js": "^5.1.0",
+		"bn.js": "^5.2.0",
+		"ganache-cli": "^6.12.2",
+		"truffle": "^5.3.2"
+	}
+}

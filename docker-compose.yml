@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  core:
+    build:
+      context: .
+      dockerfile: packages/core/Dockerfile
+    command: yarn workspace @dandercoin/core devchain
+    ports:
+      - 8545:8545
+    volumes:
+      # Mount app code for a more ergonomic development experience
+      - ./packages:/app/packages
+      # Mount yarn cache so packages can be installed from the container
+      - ./.yarn/cache:/app/.yarn/cache
+      - ./yarn.lock:/app/yarn.lock
+      - ./package.json:/app/package.json
+  web:
+    build:
+      context: .
+      dockerfile: packages/web/Dockerfile
+    command: yarn workspace @dandercoin/web start
+    ports:
+      - 3000:3000
+    volumes:
+      - ./packages:/app/packages

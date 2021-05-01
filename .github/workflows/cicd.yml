@@ -1,0 +1,160 @@
+name: CI/CD
+
+on: push
+
+jobs:
+  build_front:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache modules
+        uses: actions/cache@v2
+        with:
+          path: |
+            .yarn/unplugged
+            .yarn/build-state.yml
+            .yarn/install-state.gz
+            node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('yarn.lock') }}-${{ hashFiles('.yarnrc.yml') }}
+
+      - name: Link dependencies
+        run: yarn
+
+      - name: Build front-end
+        run: yarn workspace @dandercoin/web build
+
+      - name: Build front-end functions
+        run: yarn workspace @dandercoin/web-fns build
+
+      - name: Store front-end build output
+        uses: actions/upload-artifact@v2
+        with:
+          name: front_build
+          path: packages/web/out
+
+      - name: Store functions build output
+        uses: actions/upload-artifact@v2
+        with:
+          name: web-fns_build
+          path: packages/web-fns/build
+
+  lint:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache modules
+        uses: actions/cache@v2
+        with:
+          path: |
+            .yarn/unplugged
+            .yarn/build-state.yml
+            .yarn/install-state.gz
+            node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('yarn.lock') }}-${{ hashFiles('.yarnrc.yml') }}
+
+      - name: Link dependencies
+        run: yarn
+
+      - name: Lint project
+        run: yarn lint
+
+  deploy_front:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
+    needs:
+      - build_front
+    env:
+      AWS_ACCESS_KEY_ID: >-
+        ${{
+          github.ref == 'refs/heads/master'
+            && secrets.PRODUCTION_AWS_ACCESS_KEY_ID
+            || secrets.STAGING_AWS_ACCESS_KEY_ID
+        }}
+      AWS_CF_DISTRIBUTION_ID: >-
+        ${{
+          github.ref == 'refs/heads/master'
+            && secrets.PRODUCTION_AWS_CF_DISTRIBUTION_ID
+            || secrets.STAGING_AWS_CF_DISTRIBUTION_ID
+        }}
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_ORIGIN_REQUEST_FUNCTION_ARN: >-
+        ${{
+          github.ref == 'refs/heads/master'
+            && secrets.PRODUCTION_AWS_ORIGIN_REQUEST_FUNCTION_ARN
+            || secrets.STAGING_AWS_ORIGIN_REQUEST_FUNCTION_ARN
+        }}
+      AWS_ORIGIN_RESPONSE_FUNCTION_ARN: >-
+        ${{
+          github.ref == 'refs/heads/master'
+            && secrets.PRODUCTION_AWS_ORIGIN_RESPONSE_FUNCTION_ARN
+            || secrets.STAGING_AWS_ORIGIN_RESPONSE_FUNCTION_ARN
+        }}
+      AWS_S3_BUCKET_NAME: >-
+        ${{
+          github.ref == 'refs/heads/master'
+            && secrets.PRODUCTION_AWS_S3_BUCKET_NAME
+            || secrets.STAGING_AWS_S3_BUCKET_NAME
+        }}
+      AWS_SECRET_ACCESS_KEY: >-
+        ${{
+          github.ref == 'refs/heads/master'
+            && secrets.PRODUCTION_AWS_SECRET_ACCESS_KEY
+            || secrets.STAGING_AWS_SECRET_ACCESS_KEY
+        }}
+
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: front_build
+          path: build
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: web-fns_build
+          path: fns
+
+      - name: Deploy to S3
+        run: aws s3 sync build/ "s3://$AWS_S3_BUCKET_NAME" --delete
+
+      - name: Add cache-control header to javascript files
+        run: >-
+          aws s3 cp --recursive
+          "s3://$AWS_S3_BUCKET_NAME/_next/static/chunks" "s3://$AWS_S3_BUCKET_NAME/_next/static/chunks"
+          --copy-props metadata-directive
+          --cache-control max-age=31536000
+
+      - name: Add cache-control header to fonts
+        run: >-
+          aws s3 cp --recursive
+          "s3://$AWS_S3_BUCKET_NAME/_next/static/fonts" "s3://$AWS_S3_BUCKET_NAME/_next/static/fonts"
+          --copy-props metadata-directive
+          --cache-control max-age=31536000
+
+      - name: Add cache-control header to images
+        run: >-
+          aws s3 cp --recursive
+          "s3://$AWS_S3_BUCKET_NAME/_next/static/images" "s3://$AWS_S3_BUCKET_NAME/_next/static/images"
+          --copy-props metadata-directive
+          --cache-control max-age=31536000
+
+      - name: Deploy Origin Request to Lambda
+        run: >-
+          aws lambda update-function-code
+          --function-name "$AWS_ORIGIN_REQUEST_FUNCTION_ARN"
+          --zip-file fileb://fns/origin_request_lambda_function.zip
+
+      - name: Deploy Origin Response to Lambda
+        run: >-
+          aws lambda update-function-code
+          --function-name "$AWS_ORIGIN_RESPONSE_FUNCTION_ARN"
+          --zip-file fileb://fns/origin_response_lambda_function.zip
+
+      - name: Clear CloudFront cache
+        run: >-
+          aws cloudfront create-invalidation
+          --distribution-id "$AWS_CF_DISTRIBUTION_ID"
+          --paths /\*

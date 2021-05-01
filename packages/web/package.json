@@ -1,0 +1,29 @@
+{
+  "name": "@dandercoin/web",
+  "private": true,
+  "scripts": {
+    "build": "next build && next export",
+    "start": "next dev"
+  },
+  "dependencies": {
+    "$": "link:./src",
+    "next": "^10.1.3",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "styled-components": "^5.2.3",
+    "styled-normalize": "^8.0.7",
+    "web3": "^1.3.5"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.41",
+    "@types/react": "^17.0.3",
+    "@types/sharp": "^0.28.0",
+    "@types/styled-components": "^5.1.9",
+    "babel-plugin-styled-components": "npm:@z1digitalstudio/babel-plugin-styled-components@1.12.0-rev.1",
+    "file-loader": "^6.2.0",
+    "next-compose-plugins": "^2.2.1",
+    "responsive-loader": "^2.3.0",
+    "sharp": "^0.28.1",
+    "typescript": "^4.2.4"
+  }
+}
