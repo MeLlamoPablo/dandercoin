@@ -58,3 +58,22 @@ provider "registry.terraform.io/integrations/github" {
     "zh:f7e801df97fd73ab71dcf788e1aea36b49ac1d97d624be6e259887e0b0a249c6",
   ]
 }
+
+provider "registry.terraform.io/scottwinkler/shell" {
+  version     = "1.7.7"
+  constraints = "~> 1.7.7"
+  hashes = [
+    "h1:CFW2vn7gkvSTjxv0p1vs5zr+RxD/o5fxvScaOKF1ZSc=",
+    "zh:12e2d972b0b051b35eb7c50e83e4abee5e0503699268d956610354a59991fd47",
+    "zh:1eab0c8cd7039f108c8c276ef45fd381c3d19532317c8e436dd16aaf9ef63724",
+    "zh:262015163d21d9d175a9d4af3b1123f5c565515b8f64b8cdca9eb863bf0fc932",
+    "zh:3a8ef7b719a471f795a97d6b4c051e940989befabfaba0c684528c5befdd27f2",
+    "zh:4b9338cd879a00df81b58c005c0b81f265e6808089508456aa3d4f806c6471b9",
+    "zh:5cf55e2b56e4c836f099434535b5c1103bd7c94523f9d2edb12c3486d0b54f4f",
+    "zh:61da0ade5f1949b43e617984d0805bcef9d7719d939cc8d870489ac5474887a6",
+    "zh:81b88a75df54b8a235a5900e0b0c68ef2a1503d4e80a764174551b8d2d603329",
+    "zh:9894932a31a6c5240c270723af3497915e286dcb74e236f40cd44cf727e57fad",
+    "zh:a465ef8c9ebcfdf1e0e92e4043c37145aa3bb35483760bca067be66d266e1582",
+    "zh:e5fd52a28f6b05bf394f50b5a562db307cc8ea008081262e0dcc5db9a47c3ed8",
+  ]
+}

@@ -7,14 +7,24 @@
   },
   "dependencies": {
     "$": "link:./src",
+    "@material-ui/core": "^4.11.4",
+    "@toruslabs/torus-embed": "^1.10.10",
+    "@truffle/contract": "^4.3.15",
+    "blueimp-md5": "^2.18.0",
+    "date-fns": "^2.22.1",
+    "localforage": "^1.9.0",
     "next": "^10.1.3",
+    "query-string": "^7.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-icons": "^4.2.0",
+    "react-query": "^3.15.2",
     "styled-components": "^5.2.3",
     "styled-normalize": "^8.0.7",
     "web3": "^1.3.5"
   },
   "devDependencies": {
+    "@types/blueimp-md5": "^2.18.0",
     "@types/node": "^14.14.41",
     "@types/react": "^17.0.3",
     "@types/sharp": "^0.28.0",
@@ -24,6 +34,7 @@
     "next-compose-plugins": "^2.2.1",
     "responsive-loader": "^2.3.0",
     "sharp": "^0.28.1",
-    "typescript": "^4.2.4"
+    "typescript": "^4.2.4",
+    "utility-types": "^3.10.0"
   }
 }

@@ -1,11 +1,14 @@
 FROM ubuntu:20.04
 
+LABEL org.opencontainers.image.source=https://github.com/MeLlamoPablo/dandercoin
+
 RUN apt-get update && \
     apt-get install -y curl && \
     # Install Node.js
     curl -fsSL https://deb.nodesource.com/setup_14.x | bash - && \
     # Actually install required dependencies
-    apt-get install -y nodejs && \
+    apt-get install -y nodejs python3 python3-pip && \
+    pip3 install slither-analyzer && \
     # Cleanup
     apt-get purge -y curl && \
     apt-get autoremove -y && \
@@ -30,6 +33,7 @@ COPY package.json .
 COPY yarn.lock .
 
 COPY packages/core/package.json ./packages/core/package.json
+COPY packages/identity/package.json ./packages/identity/package.json
 COPY packages/web/package.json ./packages/web/package.json
 COPY packages/web-fns/package.json ./packages/web-fns/package.json
 

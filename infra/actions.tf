@@ -22,6 +22,42 @@ resource "github_actions_secret" "cf_distribution" {
   plaintext_value = module.web.cloudfront_distribution_id
 }
 
+resource "github_actions_secret" "dandercoin_contract_address" {
+  repository      = var.github_repository
+  secret_name     = "${upper(terraform.workspace)}_DANDERCOIN_CONTRACT_ADDRESS"
+  plaintext_value = var.dandercoin_contract_address
+}
+
+resource "github_actions_secret" "distributor_contract_address" {
+  repository      = var.github_repository
+  secret_name     = "${upper(terraform.workspace)}_DISTRIBUTOR_CONTRACT_ADDRESS"
+  plaintext_value = var.distributor_contract_address
+}
+
+resource "github_actions_secret" "ethereum_chain_id" {
+  repository      = var.github_repository
+  secret_name     = "${upper(terraform.workspace)}_ETHEREUM_CHAIN_ID"
+  plaintext_value = var.ethereum_chain_id
+}
+
+resource "github_actions_secret" "identity_api_endpoint" {
+  repository      = var.github_repository
+  secret_name     = "${upper(terraform.workspace)}_IDENTITY_API_ENDPOINT"
+  plaintext_value = module.identity_api.endpoint
+}
+
+resource "github_actions_secret" "identity_api_function_arn" {
+  repository      = var.github_repository
+  secret_name     = "${upper(terraform.workspace)}_AWS_IDENTITY_API_FUNCTION_ARN"
+  plaintext_value = module.identity_api.function_arn
+}
+
+resource "github_actions_secret" "identity_oracle_contract_address" {
+  repository      = var.github_repository
+  secret_name     = "${upper(terraform.workspace)}_IDENTITY_ORACLE_CONTRACT_ADDRESS"
+  plaintext_value = var.identity_oracle_contract_address
+}
+
 resource "github_actions_secret" "origin_request_function_arn" {
   repository      = var.github_repository
   secret_name     = "${upper(terraform.workspace)}_AWS_ORIGIN_REQUEST_FUNCTION_ARN"

@@ -29,6 +29,7 @@ COPY package.json .
 COPY yarn.lock .
 
 COPY packages/core/package.json ./packages/core/package.json
+COPY packages/identity/package.json ./packages/identity/package.json
 COPY packages/web/package.json ./packages/web/package.json
 COPY packages/web-fns/package.json ./packages/web-fns/package.json
 

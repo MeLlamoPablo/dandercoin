@@ -9,6 +9,10 @@ terraform {
       source  = "integrations/github"
       version = "~> 4.9.2"
     }
+    shell = {
+      source  = "scottwinkler/shell"
+      version = "~> 1.7.7"
+    }
   }
 }
 

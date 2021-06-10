@@ -3,7 +3,124 @@ name: CI/CD
 on: push
 
 jobs:
-  build_front:
+  build_core_image:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Generate image tag
+        id: tag
+        env:
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+        run: |
+          repo_lowercase="$(echo ${REPO} | tr '[:upper:]' '[:lower:]')"
+          echo ::set-output name=commit::ghcr.io/${repo_lowercase}:${SHA}
+          echo ::set-output name=latest::ghcr.io/${repo_lowercase}:latest
+
+      - uses: actions/checkout@v2
+
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Setup Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+        with:
+          install: true
+
+      - name: Login to ghcr.io
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v2
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          cache-from: type=registry,ref=ghcr.io/mellamopablo/dandercoin:latest
+          cache-to: type=inline
+          context: .
+          file: packages/core/Dockerfile
+          push: true
+          tags: ${{ steps.tag.outputs.commit }},${{ steps.tag.outputs.latest }}
+
+  build_core:
+    runs-on: ubuntu-20.04
+    container: ghcr.io/mellamopablo/dandercoin:${{ github.sha }}
+    needs:
+      - build_core_image
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache modules
+        uses: actions/cache@v2
+        with:
+          path: |
+            .yarn/unplugged
+            .yarn/build-state.yml
+            .yarn/install-state.gz
+            node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('yarn.lock') }}-${{ hashFiles('.yarnrc.yml') }}
+
+      - name: Link dependencies
+        run: yarn
+
+      - name: Build contracts
+        run: yarn workspace @dandercoin/core build
+
+      - name: Extract public contract ABIs
+        run: yarn workspace @dandercoin/core extract
+
+      - name: Store contracts
+        uses: actions/upload-artifact@v2
+        with:
+          name: core_build
+          path: packages/core/build
+
+      - name: Store public contract ABIs
+        uses: actions/upload-artifact@v2
+        with:
+          name: core_public_abis
+          path: packages/core/out
+
+  test_core:
+    runs-on: ubuntu-20.04
+    container: ghcr.io/mellamopablo/dandercoin:${{ github.sha }}
+    needs:
+      - build_core
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache modules
+        uses: actions/cache@v2
+        with:
+          path: |
+            .yarn/unplugged
+            .yarn/build-state.yml
+            .yarn/install-state.gz
+            node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('yarn.lock') }}-${{ hashFiles('.yarnrc.yml') }}
+
+      - name: Link dependencies
+        run: yarn
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: core_build
+          path: packages/core/build
+
+      - name: Test core
+        run: |
+          yarn workspace @dandercoin/core devchain &
+          pid="$!"
+          sleep 5
+          yarn workspace @dandercoin/core test
+          kill -INT "$pid"
+
+  build_identity_api:
     runs-on: ubuntu-20.04
 
     steps:
@@ -21,6 +138,94 @@ jobs:
 
       - name: Link dependencies
         run: yarn
+
+      - name: Build identity api
+        run: yarn workspace @dandercoin/identity build
+
+      - name: Store build output
+        uses: actions/upload-artifact@v2
+        with:
+          name: identity_api_build
+          path: packages/identity/build/lambda_function.zip
+
+  build_front:
+    runs-on: ubuntu-20.04
+    needs:
+      - build_core
+
+    env:
+      NEXT_PUBLIC_DANDERCOIN_CONTRACT_ADDRESS: >-
+        ${{
+        github.ref == 'refs/heads/master'
+          && secrets.PRODUCTION_DANDERCOIN_CONTRACT_ADDRESS
+          || secrets.STAGING_DANDERCOIN_CONTRACT_ADDRESS
+        }}
+      NEXT_PUBLIC_DISTRIBUTOR_CONTRACT_ADDRESS: >-
+        ${{
+        github.ref == 'refs/heads/master'
+          && secrets.PRODUCTION_DISTRIBUTOR_CONTRACT_ADDRESS
+          || secrets.STAGING_DISTRIBUTOR_CONTRACT_ADDRESS
+        }}
+      NEXT_PUBLIC_ETHEREUM_BLOCK_EXPLORER_URL: >-
+        ${{
+          github.ref == 'refs/heads/master'
+            && 'https://explorer-mainnet.maticvigil.com'
+            || 'https://explorer-mumbai.maticvigil.com'
+        }}
+      NEXT_PUBLIC_ETHEREUM_CHAIN_ID: >-
+        ${{
+          github.ref == 'refs/heads/master'
+            && secrets.PRODUCTION_ETHEREUM_CHAIN_ID
+            || secrets.STAGING_ETHEREUM_CHAIN_ID
+        }}
+      NEXT_PUBLIC_ETHEREUM_CHAIN_NAME: >-
+        ${{
+          github.ref == 'refs/heads/master'
+            && 'Polygon'
+            || 'Polygon Mumbai Testnet'
+        }}
+      NEXT_PUBLIC_ETHEREUM_CHAIN_NATIVE_CURRENCY_NAME: MATIC
+      NEXT_PUBLIC_ETHEREUM_RPC_URL: >-
+        ${{
+          github.ref == 'refs/heads/master'
+            && 'https://rpc-mainnet.maticvigil.com'
+            || 'https://rpc-mumbai.maticvigil.com'
+        }}
+      NEXT_PUBLIC_IDENTITY_API_ENDPOINT: >-
+        ${{
+          github.ref == 'refs/heads/master'
+            && secrets.PRODUCTION_IDENTITY_API_ENDPOINT
+            || secrets.STAGING_IDENTITY_API_ENDPOINT
+        }}
+      NEXT_PUBLIC_IDENTITY_ORACLE_CONTRACT_ADDRESS: >-
+        ${{
+          github.ref == 'refs/heads/master'
+            && secrets.PRODUCTION_IDENTITY_ORACLE_CONTRACT_ADDRESS
+            || secrets.STAGING_IDENTITY_ORACLE_CONTRACT_ADDRESS
+        }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache modules
+        uses: actions/cache@v2
+        with:
+          path: |
+            .yarn/unplugged
+            .yarn/build-state.yml
+            .yarn/install-state.gz
+            node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('yarn.lock') }}-${{ hashFiles('.yarnrc.yml') }}
+
+      - name: Link dependencies
+        run: yarn
+
+      # Those already exists on git, but overwrite them just in case the
+      # contract ABIs were updated but we forgot to overwrite them manually.
+      - uses: actions/download-artifact@v2
+        with:
+          name: core_public_abis
+          path: packages/web/src/assets/contracts
 
       - name: Build front-end
         run: yarn workspace @dandercoin/web build
@@ -61,6 +266,50 @@ jobs:
 
       - name: Lint project
         run: yarn lint
+
+  deploy_identity_api:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
+    needs:
+      - build_identity_api
+    env:
+      AWS_ACCESS_KEY_ID: >-
+        ${{
+          github.ref == 'refs/heads/master'
+            && secrets.PRODUCTION_AWS_ACCESS_KEY_ID
+            || secrets.STAGING_AWS_ACCESS_KEY_ID
+        }}
+      AWS_CF_DISTRIBUTION_ID: >-
+        ${{
+          github.ref == 'refs/heads/master'
+            && secrets.PRODUCTION_AWS_CF_DISTRIBUTION_ID
+            || secrets.STAGING_AWS_CF_DISTRIBUTION_ID
+        }}
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_IDENTITY_API_FUNCTION_ARN: >-
+        ${{
+          github.ref == 'refs/heads/master'
+            && secrets.PRODUCTION_AWS_IDENTITY_API_FUNCTION_ARN
+            || secrets.STAGING_AWS_IDENTITY_API_FUNCTION_ARN
+        }}
+      AWS_SECRET_ACCESS_KEY: >-
+        ${{
+          github.ref == 'refs/heads/master'
+            && secrets.PRODUCTION_AWS_SECRET_ACCESS_KEY
+            || secrets.STAGING_AWS_SECRET_ACCESS_KEY
+        }}
+
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: identity_api_build
+          path: build
+
+      - name: Deploy to Lambda
+        run: >-
+          aws lambda update-function-code
+          --function-name "$AWS_IDENTITY_API_FUNCTION_ARN"
+          --zip-file fileb://build/lambda_function.zip
 
   deploy_front:
     runs-on: ubuntu-latest

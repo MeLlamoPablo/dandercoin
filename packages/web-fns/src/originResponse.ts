@@ -15,9 +15,29 @@ export const handler: CloudFrontResponseHandler = async (event) => {
       {
         key: 'Content-Security-Policy',
         value: oneLineTrim`
-          default-src 'self'; 
+          default-src 'none'; 
+          base-uri 'self'; 
+          connect-src 
+            https://identity-api.danderco.in/ 
+            https://identity-api.staging.danderco.in/ 
+            https://rpc-mainnet.maticvigil.com/ 
+            https://rpc-mumbai.maticvigil.com/
+          ; 
+          font-src 'self'; 
+          form-action 'none'; 
           frame-ancestors 'none'; 
-          img-src 'self'; 
+          img-src 
+            'self' 
+            https://media.giphy.com/ 
+            https://www.gravatar.com/
+          ; 
+          prefetch-src 'self'; 
+          sandbox 
+            allow-forms 
+            allow-popups 
+            allow-same-origin 
+            allow-scripts
+          ; 
           script-src 'self' 'unsafe-inline'; 
           style-src 'self' 'unsafe-inline'
         `,

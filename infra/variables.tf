@@ -10,9 +10,21 @@ variable "base_domain" {
   default = "danderco.in"
 }
 
+variable "dandercoin_contract_address" {}
+
+variable "distributor_contract_address" {}
+
+variable "ethereum_chain_id" {}
+
 variable "github_repository" {
   default = "dandercoin"
 }
+
+variable "identity_api_domain" {
+  description = "The domain where the identity api will be hosted. Must be a subdomain of the base domain."
+}
+
+variable "identity_oracle_contract_address" {}
 
 variable "use_route53" {
   default     = true
