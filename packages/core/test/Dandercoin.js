@@ -1,5 +1,6 @@
 const BN = require('bn.js');
 
+const DandercoinHooks = require('./DandercoinHooks');
 const MintControl = require('./MintControl');
 
 const Dandercoin = artifacts.require('Dandercoin');
@@ -52,5 +53,6 @@ contract('Dandercoin', (accounts) => {
     );
   });
 
+  DandercoinHooks(accounts);
   MintControl(accounts);
 });
