@@ -35,6 +35,9 @@ const MainLayout: FC<Props> = ({ children, className }) => (
         </Logo>
       </Link>
       <Navigation>
+        <Link href="/bank" passHref>
+          <NavLink>Bank</NavLink>
+        </Link>
         <Link href="/rankings" passHref>
           <NavLink>Rankings</NavLink>
         </Link>

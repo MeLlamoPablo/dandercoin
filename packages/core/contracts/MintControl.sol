@@ -73,20 +73,16 @@ abstract contract MintControl {
     _performUnrestrictedMint(account, amount);
   }
 
+  function remainingGlobalMintCapacity() public view returns (uint256) {
+    return _getRemainingMintCapacityOf(_global);
+  }
+
   function remainingMintCapacityOf(address account) public view returns (uint256) {
-    Minter memory minter = _minters[account];
+    return _getRemainingMintCapacityOf(_minters[account]);
+  }
 
-    uint256 replenishedConsumption = _getReplenishedConsumption(
-      minter.consumed,
-      minter.limit,
-      minter.lastMintTimestamp
-    );
-
-    if (replenishedConsumption >= minter.limit) {
-      return 0;
-    }
-
-    return minter.limit - replenishedConsumption;
+  function yearlyGlobalMintLimit() public view returns (uint256) {
+    return _global.limit;
   }
 
   function yearlyMintLimitOf(address account) public view returns (uint256) {
@@ -101,6 +97,22 @@ abstract contract MintControl {
     );
     minter.consumed += amount;
     minter.lastMintTimestamp = block.timestamp;
+  }
+
+  function _getRemainingMintCapacityOf(
+    Minter memory minter
+  ) public view returns (uint256) {
+    uint256 replenishedConsumption = _getReplenishedConsumption(
+      minter.consumed,
+      minter.limit,
+      minter.lastMintTimestamp
+    );
+
+    if (replenishedConsumption >= minter.limit) {
+      return 0;
+    }
+
+    return minter.limit - replenishedConsumption;
   }
 
   function _getReplenishedConsumption(
