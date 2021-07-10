@@ -899,7 +899,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@dandercoin/core@workspace:packages/core"
   dependencies:
-    "@openzeppelin/contracts": ^4.1.0
+    "@openzeppelin/contracts": ^4.2.0
     "@truffle/hdwallet-provider": ^1.2.6
     "@types/bn.js": ^5.1.0
     bn.js: ^5.2.0
@@ -2024,10 +2024,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@openzeppelin/contracts@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "@openzeppelin/contracts@npm:4.1.0"
-  checksum: 1fddde14b45568ac724f47b986df214a1e089fcf8d1964fb80fcc297714becec3c1411fbad4ec084e9d1d97ffbcecf47d8587405f8fd82e3335f167cf43cd5f7
+"@openzeppelin/contracts@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "@openzeppelin/contracts@npm:4.2.0"
+  checksum: 5dee34e72797ec5071a8123db1225ac255570bf47bf28f4c20b651efe1422d6581115e699de4472a4a7c704876b4ccced5f73c9f7bacbea2199c4829d9e92e23
   languageName: node
   linkType: hard
 

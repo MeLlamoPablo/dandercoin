@@ -4,7 +4,6 @@ const Dandercoin = artifacts.require('Dandercoin');
 const Distributor = artifacts.require('Distributor');
 const Identity = artifacts.require('Identity');
 const IdentityOracle = artifacts.require('IdentityOracle');
-const MockHooked = artifacts.require('MockHooked');
 const StringUtils = artifacts.require('StringUtils');
 
 const INITIAL_SUPPLY = '50000000000000000000'; // 50 DANDER
@@ -35,8 +34,4 @@ module.exports = async function (deployer, network, accounts) {
     (await Dandercoin.deployed()).address,
     (await IdentityOracle.deployed()).address,
   );
-
-  if (network === 'development') {
-    await deployer.deploy(MockHooked, (await Dandercoin.deployed()).address);
-  }
 };
