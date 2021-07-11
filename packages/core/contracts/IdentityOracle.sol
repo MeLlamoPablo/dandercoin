@@ -36,6 +36,8 @@ import "./utils/StringUtils.sol";
  *   operator can do is limited.
  */
 contract IdentityOracle is AccessControl, EIP712 {
+  using StringUtils for string;
+
   struct RegisteredIdentity {
     address account;
     string email;
@@ -111,21 +113,21 @@ contract IdentityOracle is AccessControl, EIP712 {
     }
 
     string memory oldEmail = emailsByAccount[account];
-    if (!StringUtils.equals(oldEmail, '')) {
+    if (!oldEmail.equals('')) {
       // This same address was previously registered, therefore we are updating
       // the email (or doing nothing, in which case the caller just wasted gas)
       // Remove the previous email
       accountsByEmail[oldEmail] = address(0);
     }
 
-    if (!StringUtils.equals(email, '')) {
+    if (!email.equals('')) {
       accountsByEmail[email] = account;
     }
     if (account != address(0)) {
       emailsByAccount[account] = email;
     }
 
-    if (account != address(0) && !StringUtils.equals(email, '')) {
+    if (account != address(0) && !email.equals('')) {
       insertAccountToList(account);
     }
   }
