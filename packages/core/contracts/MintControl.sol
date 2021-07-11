@@ -121,7 +121,7 @@ abstract contract MintControl {
     uint lastTimestamp
   ) private view returns (uint256) {
     uint approxSecondsElapsed = block.timestamp - lastTimestamp;
-    uint256 approxReplenishPerSecond = limit / 365 / 24 / 60 / 60;
+    uint256 approxReplenishPerSecond = limit / 365 days;
     uint256 approxReplenish = approxReplenishPerSecond * approxSecondsElapsed;
 
     if (approxReplenish > consumed) {
