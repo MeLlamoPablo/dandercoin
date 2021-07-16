@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // Taken from https://github.com/compound-finance/compound-protocol/blob/ae4388e780a8d596d97619d9704a931a2752c2bc/contracts/Governance/GovernorBravoDelegate.sol
 
-pragma solidity ^0.5.16;
-pragma experimental ABIEncoderV2;
+pragma solidity ^0.8.3;
 
 import "./GovernorBravoInterfaces.sol";
 
@@ -93,28 +92,19 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV1, GovernorBravoE
     uint endBlock = add256(startBlock, votingPeriod);
 
     proposalCount++;
-    Proposal memory newProposal = Proposal({
-    id: proposalCount,
-    proposer: msg.sender,
-    eta: 0,
-    targets: targets,
-    values: values,
-    signatures: signatures,
-    calldatas: calldatas,
-    startBlock: startBlock,
-    endBlock: endBlock,
-    forVotes: 0,
-    againstVotes: 0,
-    abstainVotes: 0,
-    canceled: false,
-    executed: false
-    });
 
-    proposals[newProposal.id] = newProposal;
-    latestProposalIds[newProposal.proposer] = newProposal.id;
+    proposals[proposalCount].proposer = msg.sender;
+    proposals[proposalCount].targets = targets;
+    proposals[proposalCount].values = values;
+    proposals[proposalCount].signatures = signatures;
+    proposals[proposalCount].calldatas = calldatas;
+    proposals[proposalCount].startBlock = startBlock;
+    proposals[proposalCount].endBlock = endBlock;
 
-    emit ProposalCreated(newProposal.id, msg.sender, targets, values, signatures, calldatas, startBlock, endBlock, description);
-    return newProposal.id;
+    latestProposalIds[msg.sender] = proposalCount;
+
+    emit ProposalCreated(proposalCount, msg.sender, targets, values, signatures, calldatas, startBlock, endBlock, description);
+    return proposalCount;
   }
 
   /**
@@ -146,7 +136,7 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV1, GovernorBravoE
     Proposal storage proposal = proposals[proposalId];
     proposal.executed = true;
     for (uint i = 0; i < proposal.targets.length; i++) {
-      timelock.executeTransaction.value(proposal.values[i])(proposal.targets[i], proposal.values[i], proposal.signatures[i], proposal.calldatas[i], proposal.eta);
+      timelock.executeTransaction{value:proposal.values[i]}(proposal.targets[i], proposal.values[i], proposal.signatures[i], proposal.calldatas[i], proposal.eta);
     }
     emit ProposalExecuted(proposalId);
   }
@@ -169,11 +159,6 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV1, GovernorBravoE
     emit ProposalCanceled(proposalId);
   }
 
-  /**
-    * @notice Gets actions of a proposal
-    * @param proposalId the id of the proposal
-    * @return Targets, values, signatures, and calldatas of the proposal actions
-    */
   function getActions(uint proposalId) external view returns (address[] memory targets, uint[] memory values, string[] memory signatures, bytes[] memory calldatas) {
     Proposal storage p = proposals[proposalId];
     return (p.targets, p.values, p.signatures, p.calldatas);
@@ -383,7 +368,7 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV1, GovernorBravoE
     return a - b;
   }
 
-  function getChainIdInternal() internal pure returns (uint) {
+  function getChainIdInternal() internal view returns (uint) {
     uint chainId;
     assembly { chainId := chainid() }
     return chainId;
