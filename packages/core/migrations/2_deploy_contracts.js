@@ -3,8 +3,7 @@ const BN = require('bn.js');
 
 const Dandercoin = artifacts.require('Dandercoin');
 const Distributor = artifacts.require('Distributor');
-const GovernorBravoDelegate = artifacts.require('GovernorBravoDelegate');
-const GovernorBravoDelegator = artifacts.require('GovernorBravoDelegator');
+const GovernorBravo = artifacts.require('GovernorBravo');
 const Identity = artifacts.require('Identity');
 const IdentityOracle = artifacts.require('IdentityOracle');
 const StringUtils = artifacts.require('StringUtils');
@@ -73,20 +72,16 @@ async function deployGovernance(deployer, network, accounts) {
     1,
   );
 
-  await deployer.deploy(GovernorBravoDelegate);
-
   await deployer.deploy(
-    GovernorBravoDelegator,
+    GovernorBravo,
     (await Timelock.deployed()).address,
     (await Dandercoin.deployed()).address,
-    tempAdmin,
-    (await GovernorBravoDelegate.deployed()).address,
     GOVERNANCE_VOTING_PERIOD,
     GOVERNANCE_VOTING_DELAY,
     GOVERNANCE_PROPOSAL_THRESHOLD,
   );
 
-  const governor = await GovernorBravoDelegator.deployed();
+  const governor = await GovernorBravo.deployed();
   const timelock = await Timelock.deployed();
 
   async function runTimelocked(
@@ -138,24 +133,7 @@ async function deployGovernance(deployer, network, accounts) {
   // We have to talk to the GovernorBravoDelegate through the
   // GovernorBravoDelegator so we can't use the standard web3 methods which
   // rely on the ABI.
-  await web3.eth.sendTransaction({
-    chainId: deployer.networks[network].network_id,
-    from: tempAdmin,
-    data: web3.eth.abi.encodeFunctionCall(
-      {
-        name: '_setPendingAdmin',
-        type: 'function',
-        inputs: [
-          {
-            type: 'address',
-            name: 'newPendingAdmin',
-          },
-        ],
-      },
-      [timelock.address],
-    ),
-    to: governor.address,
-  });
+  await governor._setPendingAdmin(timelock.address);
 
   await runTimelocked(governor.address, '_acceptAdmin', [], []);
 

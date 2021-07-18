@@ -30,9 +30,6 @@ contract GovernorBravoEvents {
   // @notice An event emitted when the voting period is set
   event VotingPeriodSet(uint oldVotingPeriod, uint newVotingPeriod);
 
-  // @notice Emitted when implementation is changed
-  event NewImplementation(address oldImplementation, address newImplementation);
-
   // @notice Emitted when proposal threshold is set
   event ProposalThresholdSet(uint oldProposalThreshold, uint newProposalThreshold);
 
@@ -43,25 +40,12 @@ contract GovernorBravoEvents {
   event NewAdmin(address oldAdmin, address newAdmin);
 }
 
-contract GovernorBravoDelegatorStorage {
+contract GovernorBravoStorage {
   // @notice Administrator for this contract
   address public admin;
 
   // @notice Pending administrator for this contract
   address public pendingAdmin;
-
-  // @notice Active brains of Governor
-  address public implementation;
-}
-
-
-/**
- * @title Storage for Governor Bravo Delegate
- * @notice For future upgrades, do not change GovernorBravoDelegateStorageV1. Create a new
- * contract which implements GovernorBravoDelegateStorageV1 and following the naming convention
- * GovernorBravoDelegateStorageVX.
- */
-contract GovernorBravoDelegateStorageV1 is GovernorBravoDelegatorStorage {
 
   // @notice The delay before voting on a proposal may take place, once proposed, in blocks
   uint public votingDelay;

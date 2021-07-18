@@ -5,7 +5,7 @@ pragma solidity ^0.8.3;
 
 import "./GovernorBravoInterfaces.sol";
 
-contract GovernorBravoDelegate is GovernorBravoDelegateStorageV1, GovernorBravoEvents {
+contract GovernorBravo is GovernorBravoStorage, GovernorBravoEvents {
 
   /// @notice The name of this contract
   string public constant name = "Dandercoin Compound Governor Bravo";
@@ -41,22 +41,21 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV1, GovernorBravoE
   bytes32 public constant BALLOT_TYPEHASH = keccak256("Ballot(uint256 proposalId,uint8 support)");
 
   /**
-    * @notice Used to initialize the contract during delegator contructor
     * @param timelock_ The address of the Timelock
     * @param comp_ The address of the COMP token
     * @param votingPeriod_ The initial voting period
     * @param votingDelay_ The initial voting delay
     * @param proposalThreshold_ The initial proposal threshold
     */
-  function initialize(address timelock_, address comp_, uint votingPeriod_, uint votingDelay_, uint proposalThreshold_) public {
+  constructor(address timelock_, address comp_, uint votingPeriod_, uint votingDelay_, uint proposalThreshold_) {
     require(address(timelock) == address(0), "GovernorBravo::initialize: can only initialize once");
-    require(msg.sender == admin, "GovernorBravo::initialize: admin only");
     require(timelock_ != address(0), "GovernorBravo::initialize: invalid timelock address");
     require(comp_ != address(0), "GovernorBravo::initialize: invalid comp address");
     require(votingPeriod_ >= MIN_VOTING_PERIOD && votingPeriod_ <= MAX_VOTING_PERIOD, "GovernorBravo::initialize: invalid voting period");
     require(votingDelay_ >= MIN_VOTING_DELAY && votingDelay_ <= MAX_VOTING_DELAY, "GovernorBravo::initialize: invalid voting delay");
     require(proposalThreshold_ >= MIN_PROPOSAL_THRESHOLD && proposalThreshold_ <= MAX_PROPOSAL_THRESHOLD, "GovernorBravo::initialize: invalid proposal threshold");
 
+    admin = msg.sender;
     timelock = TimelockInterface(timelock_);
     comp = CompInterface(comp_);
     votingPeriod = votingPeriod_;

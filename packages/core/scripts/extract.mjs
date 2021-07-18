@@ -19,7 +19,7 @@ const mkdir = promisify(mkdirCb);
 const readFile = promisify(readFileCb);
 const writeFile = promisify(writeFileCb);
 
-const PUBLIC_CONTRACTS = ['Dandercoin', 'Distributor', 'IdentityOracle'];
+const PUBLIC_CONTRACTS = ['Dandercoin', 'Distributor', 'GovernorBravo', 'IdentityOracle'];
 
 await mkdir(join(process.cwd(), 'out'), { recursive: true });
 
