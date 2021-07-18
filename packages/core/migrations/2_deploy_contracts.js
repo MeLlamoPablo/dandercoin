@@ -31,7 +31,10 @@ async function deployToken(deployer, network, accounts) {
 
     await dandercoin.grantRole(defaultAdminRole, newOwner);
     await dandercoin.authorizeMinter(newOwner, MAX_GLOBAL_INFLATION);
-    await dandercoin.revokeRole(defaultAdminRole, accounts[0]);
+
+    if (network !== 'development') {
+      await dandercoin.revokeRole(defaultAdminRole, accounts[0]);
+    }
   };
 
   return { transferOwnershipTo };

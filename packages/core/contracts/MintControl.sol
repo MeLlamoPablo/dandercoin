@@ -39,8 +39,10 @@ abstract contract MintControl {
     uint256 limit;
   }
 
-  Minter private _global;
-  mapping (address => Minter) private _minters;
+  event MinterUpdated(address minter, uint256 newLimit);
+
+  Minter public _global;
+  mapping (address => Minter) public minters;
 
   constructor (uint256 globalLimit) {
     _global.lastMintTimestamp = block.timestamp;
@@ -53,16 +55,20 @@ abstract contract MintControl {
       "Caller is not allowed to authorize a minter"
     );
 
-    _minters[account].lastMintTimestamp = block.timestamp;
-    _minters[account].limit = limit;
+    minters[account].lastMintTimestamp = block.timestamp;
+    minters[account].limit = limit;
+
+    emit MinterUpdated(account, limit);
   }
 
   function mint(address account, uint256 amount) public {
-    _updateBeforeMint(_minters[account], amount);
+    Minter storage minter = minters[msg.sender];
+
+    _updateBeforeMint(minter, amount);
     _updateBeforeMint(_global, amount);
 
     require(
-      _minters[account].limit >= _minters[account].consumed,
+      minter.limit >= minter.consumed,
       "Local mint capacity exceeded"
     );
     require(
@@ -78,7 +84,7 @@ abstract contract MintControl {
   }
 
   function remainingMintCapacityOf(address account) public view returns (uint256) {
-    return _getRemainingMintCapacityOf(_minters[account]);
+    return _getRemainingMintCapacityOf(minters[account]);
   }
 
   function yearlyGlobalMintLimit() public view returns (uint256) {
@@ -86,7 +92,7 @@ abstract contract MintControl {
   }
 
   function yearlyMintLimitOf(address account) public view returns (uint256) {
-    return _minters[account].limit;
+    return minters[account].limit;
   }
 
   function _updateBeforeMint(Minter storage minter, uint256 amount) private {

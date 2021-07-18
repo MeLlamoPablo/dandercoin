@@ -37,6 +37,10 @@ contract('Dandercoin', (accounts) => {
       receiverStartingBalance.add(amount).toString(),
       "Amount wasn't correctly sent to the receiver",
     );
+
+    // Return the coins as during testing we only want the coins to remain at
+    // accounts[0].
+    await dandercoin.transfer(senderAccount, amount, { from: receiverAccount });
   });
 
   it('should have made the deployer admin', async () => {

@@ -90,7 +90,7 @@ contract('Distributor', (accounts) => {
     const dandercoin = await Dandercoin.deployed();
     const distributor = await Distributor.deployed();
 
-    const amount = '3000000000000000000000'; // 3000 DANDER
+    const amount = '300000000000000000000000'; // 300000 DANDER
 
     await dandercoin.increaseAllowance(
       distributor.address,
