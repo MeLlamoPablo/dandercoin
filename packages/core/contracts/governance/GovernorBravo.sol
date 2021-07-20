@@ -310,6 +310,7 @@ contract GovernorBravo is GovernorBravoStorage, GovernorBravoEvents {
     require(msg.sender == admin, "GovernorBravo::_initiate: admin only");
     require(initialProposalId == 0, "GovernorBravo::_initiate: can only initiate once");
     initialProposalId = 1;
+    proposalCount = 1;
     timelock.acceptAdmin();
   }
 

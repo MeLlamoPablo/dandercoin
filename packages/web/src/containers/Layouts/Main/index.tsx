@@ -41,6 +41,9 @@ const MainLayout: FC<Props> = ({ children, className }) => (
         <Link href="/rankings" passHref>
           <NavLink>Rankings</NavLink>
         </Link>
+        <Link href="/governance" passHref>
+          <NavLink>Governanza</NavLink>
+        </Link>
         <Link href="/account" passHref>
           <NavLink>
             <FaWallet />
