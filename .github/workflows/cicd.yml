@@ -169,8 +169,8 @@ jobs:
       NEXT_PUBLIC_ETHEREUM_BLOCK_EXPLORER_URL: >-
         ${{
           github.ref == 'refs/heads/master'
-            && 'https://explorer-mainnet.maticvigil.com'
-            || 'https://explorer-mumbai.maticvigil.com'
+            && 'https://polygonscan.com'
+            || 'https://mumbai.polygonscan.com'
         }}
       NEXT_PUBLIC_ETHEREUM_CHAIN_ID: >-
         ${{
@@ -191,6 +191,12 @@ jobs:
             && 'https://rpc-mainnet.maticvigil.com'
             || 'https://rpc-mumbai.maticvigil.com'
         }}
+      NEXT_PUBLIC_GOVERNOR_CONTRACT_ADDRESS: >-
+        ${{
+        github.ref == 'refs/heads/master'
+          && secrets.PRODUCTION_GOVERNOR_CONTRACT_ADDRESS
+          || secrets.STAGING_GOVERNOR_CONTRACT_ADDRESS
+        }}
       NEXT_PUBLIC_IDENTITY_API_ENDPOINT: >-
         ${{
           github.ref == 'refs/heads/master'
@@ -202,6 +208,12 @@ jobs:
           github.ref == 'refs/heads/master'
             && secrets.PRODUCTION_IDENTITY_ORACLE_CONTRACT_ADDRESS
             || secrets.STAGING_IDENTITY_ORACLE_CONTRACT_ADDRESS
+        }}
+      NEXT_PUBLIC_TIMELOCK_CONTRACT_ADDRESS: >-
+        ${{
+          github.ref == 'refs/heads/master'
+            && secrets.PRODUCTION_TIMELOCK_CONTRACT_ADDRESS
+            || secrets.STAGING_TIMELOCK_CONTRACT_ADDRESS
         }}
 
     steps:
