@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.3;
+pragma solidity ^0.8.6;
 
 library StringUtils {
   function equals(string memory self, string memory b) public pure returns (bool) {

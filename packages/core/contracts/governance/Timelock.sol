@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // Taken from https://github.com/compound-finance/compound-protocol/blob/ae4388e780a8d596d97619d9704a931a2752c2bc/contracts/Timelock.sol
 
-pragma solidity ^0.8.3;
+pragma solidity ^0.8.6;
 
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
