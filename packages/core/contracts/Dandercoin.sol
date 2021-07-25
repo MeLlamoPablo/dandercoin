@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.3;
+pragma solidity ^0.8.6;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
@@ -22,7 +22,18 @@ contract Dandercoin is AccessControl, ERC20VotesComp, MintControl {
     _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
   }
 
-  function _canAuthorizeMinter(address account) internal view override returns (bool) {
+  /**
+    * @dev Destroys `amount` tokens from the caller. Allows token holders to
+    * destroy their own tokens, in a way that can be recognized off-chain (via
+    *  event analysis).
+    *
+    * See {ERC20-_burn}.
+    */
+  function burn(uint256 amount) public virtual {
+    _burn(_msgSender(), amount);
+  }
+
+  function _canMint(address account) internal view override returns (bool) {
     return hasRole(DEFAULT_ADMIN_ROLE, account);
   }
 

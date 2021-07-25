@@ -268,7 +268,6 @@ contract('IdentityOracle', (accounts) => {
       "The identity email wasn't correctly deleted",
     );
 
-    // TODO failing
     assert.deepEqual(
       normalizeAccountPage(await identityOracle.getAccounts.call(1, 10)),
       [],

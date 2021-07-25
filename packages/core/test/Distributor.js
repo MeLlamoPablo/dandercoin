@@ -1,6 +1,6 @@
 const BN = require('bn.js');
 
-const { operatorSign } = require('./utils');
+const { advanceTime, operatorSign } = require('./utils');
 
 const Dandercoin = artifacts.require('Dandercoin');
 const Distributor = artifacts.require('Distributor');
@@ -8,6 +8,7 @@ const IdentityOracle = artifacts.require('IdentityOracle');
 
 contract('Distributor', (accounts) => {
   const adminAccount = accounts[0];
+  const unprivilegedAccount = accounts[1];
 
   it('should initially have no DANDER', async () => {
     const distributor = await Distributor.deployed();
@@ -90,7 +91,7 @@ contract('Distributor', (accounts) => {
     const dandercoin = await Dandercoin.deployed();
     const distributor = await Distributor.deployed();
 
-    const amount = '3000000000000000000000'; // 3000 DANDER
+    const amount = '300000000000000000000000'; // 300000 DANDER
 
     await dandercoin.increaseAllowance(
       distributor.address,
@@ -233,6 +234,110 @@ contract('Distributor', (accounts) => {
       assert.ok(
         error?.message.includes(
           "This account doesn't have any claimable balance!",
+        ),
+        'Transaction succeeded when it should have failed',
+      );
+    }
+  });
+
+  it('should allow to burn unclaimed grants after a year and not before', async () => {
+    const dandercoin = await Dandercoin.deployed();
+    const distributor = await Distributor.deployed();
+
+    const amount = '2000000000000000000'; // 2 DANDER
+
+    await dandercoin.increaseAllowance(
+      distributor.address,
+      new BN(amount, 10),
+      {
+        from: adminAccount,
+      },
+    );
+
+    await distributor.grant(
+      [
+        {
+          balance: amount,
+          emailHash: web3.utils.keccak256('foo@danderco.in'),
+        },
+      ],
+      {
+        from: adminAccount,
+      },
+    );
+
+    let error;
+
+    try {
+      await distributor.burnFor(web3.utils.keccak256('foo@danderco.in'), {
+        from: unprivilegedAccount,
+      });
+    } catch (e) {
+      error = e;
+    } finally {
+      assert.ok(
+        error?.message.includes('Grant still in claiming period'),
+        'Transaction succeeded when it should have failed',
+      );
+    }
+
+    assert.equal(
+      '2000000000000000000', // 2 DANDER
+      (
+        await distributor.getClaimableBalanceByEmail(
+          web3.utils.keccak256('foo@danderco.in'),
+        )
+      ).toString(),
+      'The foo account got their DANDER burned ahead of time!',
+    );
+
+    const lastBlock = await web3.eth.getBlock('latest');
+    await advanceTime(
+      web3,
+      lastBlock.timestamp +
+        366 /* days */ * 24 /* hours */ * 60 /* minutes */ * 60 /* seconds */,
+    );
+
+    const balanceBefore = await distributor.getUnclaimedBalance();
+
+    await distributor.burnFor(web3.utils.keccak256('foo@danderco.in'), {
+      from: unprivilegedAccount,
+    });
+
+    const balanceAfter = await distributor.getUnclaimedBalance();
+
+    assert.equal(
+      '0', // 2 DANDER
+      (
+        await distributor.getClaimableBalanceByEmail(
+          web3.utils.keccak256('foo@danderco.in'),
+        )
+      ).toString(),
+      "The foo account didn't get their DANDER burned!",
+    );
+
+    assert.equal(
+      amount.toString(),
+      balanceBefore.sub(balanceAfter).toString(),
+      "The unclaimed DANDER wasn't burned",
+    );
+  });
+
+  it("shouldn't allow to burn empty grants", async () => {
+    const distributor = await Distributor.deployed();
+
+    let error;
+
+    try {
+      await distributor.burnFor(web3.utils.keccak256('nobody@danderco.in'), {
+        from: unprivilegedAccount,
+      });
+    } catch (e) {
+      error = e;
+    } finally {
+      assert.ok(
+        error?.message.includes(
+          "This email doesn't have any claimable balance!",
         ),
         'Transaction succeeded when it should have failed',
       );

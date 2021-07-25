@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.3;
+pragma solidity ^0.8.6;
 
 import "./Dandercoin.sol";
 import "./IdentityOracle.sol";
@@ -21,15 +21,22 @@ import "./IdentityOracle.sol";
  * - Users pay gas for claiming their tokens. Grants can be batched.
  */
 contract Distributor {
+  uint public constant CLAIMING_PERIOD = 365 days;
+
   struct Grantee {
     uint256 balance;
     bytes32 emailHash;
   }
 
+  struct Grant {
+    uint256 balance;
+    uint timestamp;
+  }
+
   Dandercoin private dandercoin;
   IdentityOracle private identityOracle;
 
-  mapping(bytes32 => uint256) private grantees;
+  mapping(bytes32 => Grant) private grantees;
 
   constructor(Dandercoin _dandercoin, IdentityOracle _identityOracle) {
     dandercoin = _dandercoin;
@@ -47,11 +54,33 @@ contract Distributor {
   function getClaimableBalanceByEmail(
     bytes32 emailHash
   ) public view returns (uint256) {
-    return grantees[emailHash];
+    return grantees[emailHash].balance;
+  }
+
+  function getDeadlineByEmail(
+    bytes32 emailHash
+  ) public view returns (uint256) {
+    return grantees[emailHash].timestamp + CLAIMING_PERIOD;
   }
 
   function getUnclaimedBalance() public view returns (uint256) {
     return dandercoin.balanceOf(address(this));
+  }
+
+  /**
+   * Allows anyone to claim DANDER tokens on behalf of any verified account.
+   */
+  function burnFor(bytes32 emailHash) public {
+    uint256 balance = getClaimableBalanceByEmail(emailHash);
+    require(balance > 0, "This email doesn't have any claimable balance!");
+    require(
+      block.timestamp > getDeadlineByEmail(emailHash),
+      "Grant still in claiming period"
+    );
+
+    delete grantees[emailHash];
+
+    dandercoin.burn(balance);
   }
 
   /**
@@ -63,7 +92,7 @@ contract Distributor {
     uint256 balance = getClaimableBalanceByEmail(emailHash);
     require(balance > 0, "This account doesn't have any claimable balance!");
 
-    grantees[emailHash] -= balance;
+    delete grantees[emailHash];
 
     dandercoin.transfer(account, balance);
   }
@@ -91,7 +120,8 @@ contract Distributor {
     // AFTER all checks have passed.
     for (uint i = 0; i < newGrantees.length; i++) {
       Grantee memory grantee = newGrantees[i];
-      grantees[grantee.emailHash] += grantee.balance;
+      grantees[grantee.emailHash].balance += grantee.balance;
+      grantees[grantee.emailHash].timestamp += block.timestamp;
     }
   }
 }

@@ -6,31 +6,19 @@ const Dandercoin = artifacts.require('Dandercoin');
 
 module.exports = (accounts) =>
   describe('Throttled Minting', () => {
-    const minterAccount = accounts[1];
-    const mintLimit = new BN('2000000000000000000', 10); // 2 DANDER/year
+    const adminAccount = accounts[0];
+    const receiverAccount = accounts[1];
+    const mintLimit = new BN('100000000000000000000000', 10); // 100000 DANDER/year
 
-    it('should allow the admin account to authorize the minter account', async () => {
+    it('should allow minting within the limit', async () => {
       const dandercoin = await Dandercoin.deployed();
+      const amount = new BN('50000000000000000000000', 10); // 50000 DANDER
 
-      await dandercoin.authorizeMinter(minterAccount, mintLimit);
-      const setLimit = await dandercoin.yearlyMintLimitOf.call(minterAccount);
-
-      assert.equal(
-        setLimit.toString(),
-        mintLimit.toString(),
-        'Mint limit was not set successfully',
-      );
-    });
-
-    it('should allow the minter account account to mint within the limit', async () => {
-      const dandercoin = await Dandercoin.deployed();
-      const amount = new BN('500000000000000000', 10); // 0.5 DANDER
-
-      const startingBalance = await dandercoin.balanceOf.call(minterAccount);
-      await dandercoin.mint(minterAccount, amount, {
-        from: minterAccount,
+      const startingBalance = await dandercoin.balanceOf.call(receiverAccount);
+      await dandercoin.mint(receiverAccount, amount, {
+        from: adminAccount,
       });
-      const endingBalance = await dandercoin.balanceOf.call(minterAccount);
+      const endingBalance = await dandercoin.balanceOf.call(receiverAccount);
 
       assert.equal(
         endingBalance.sub(startingBalance).toString(),
@@ -38,38 +26,41 @@ module.exports = (accounts) =>
         'Mint was not performed successfully',
       );
 
-      const remainingMintCapacity = await dandercoin.remainingMintCapacityOf.call(
-        minterAccount,
-      );
+      const remainingMintCapacity = await dandercoin.getRemainingMintCapacity();
 
       assert.equal(
         remainingMintCapacity.toString(),
         mintLimit.sub(amount).toString(),
         'Mint capacity was not consumed correctly',
       );
+
+      // Return the minted coins for ease of testing
+      await dandercoin.transfer(adminAccount, amount, {
+        from: receiverAccount,
+      });
     });
 
-    it('should prevent the minter account account from minting above the limit', async () => {
+    it('should prevent minting above the limit', async () => {
       const dandercoin = await Dandercoin.deployed();
-      const amount = new BN('1800000000000000000', 10); // 1.8 DANDER
+      const amount = new BN('70000000000000000000000', 10); // 70000 DANDER
 
       let error;
 
       try {
-        await dandercoin.mint(minterAccount, amount, {
-          from: minterAccount,
+        await dandercoin.mint(receiverAccount, amount, {
+          from: adminAccount,
         });
       } catch (e) {
         error = e;
       } finally {
         assert.ok(
-          error?.message.includes('Local mint capacity exceeded'),
+          error?.message.includes('Mint capacity exceeded'),
           'Transaction succeeded when it should have failed',
         );
       }
     });
 
-    it('should allow the minter account to mint when the limit replenishes', async () => {
+    it('should allow minting when the limit replenishes', async () => {
       const lastBlock = await web3.eth.getBlock('latest');
       await advanceTime(
         web3,
@@ -78,22 +69,27 @@ module.exports = (accounts) =>
       );
 
       const dandercoin = await Dandercoin.deployed();
-      const amount = new BN('1800000000000000000', 10); // 1.8 DANDER
+      const amount = new BN('70000000000000000000000', 10); // 70000 DANDER
 
-      const startingBalance = await dandercoin.balanceOf.call(minterAccount);
-      await dandercoin.mint(minterAccount, amount, {
-        from: minterAccount,
+      const startingBalance = await dandercoin.balanceOf.call(receiverAccount);
+      await dandercoin.mint(receiverAccount, amount, {
+        from: adminAccount,
       });
-      const endingBalance = await dandercoin.balanceOf.call(minterAccount);
+      const endingBalance = await dandercoin.balanceOf.call(receiverAccount);
 
       assert.equal(
         endingBalance.sub(startingBalance).toString(),
         amount.toString(),
         'Mint was not performed successfully',
       );
+
+      // Return the minted coins for ease of testing
+      await dandercoin.transfer(adminAccount, amount, {
+        from: receiverAccount,
+      });
     });
 
-    it('should prevent the minter account from minting higher than their limit, even if more than a year has passed', async () => {
+    it('should prevent minting higher than their limit, even if more than a year has passed', async () => {
       const lastBlock = await web3.eth.getBlock('latest');
       await advanceTime(
         web3,
@@ -106,60 +102,22 @@ module.exports = (accounts) =>
       );
 
       const dandercoin = await Dandercoin.deployed();
-      const amount = new BN('2800000000000000000', 10); // 2.8 DANDER
+      const amount = new BN('280000000000000000000000', 10); // 280000 DANDER
 
       let error;
 
       try {
-        await dandercoin.mint(minterAccount, amount, {
-          from: minterAccount,
+        await dandercoin.mint(receiverAccount, amount, {
+          from: adminAccount,
         });
       } catch (e) {
         error = e;
       } finally {
         assert.ok(
-          error?.message.includes('Local mint capacity exceeded'),
+          error?.message.includes('Mint capacity exceeded'),
           'Transaction succeeded when it should have failed',
         );
       }
-    });
-
-    it('should prevent the minter account from minting higher than the global limit', async () => {
-      const dandercoin = await Dandercoin.deployed();
-
-      const newLimit = new BN('20000000000000000000', 10); // 20 DANDER/year
-      await dandercoin.authorizeMinter(minterAccount, newLimit);
-
-      const amount = new BN('15000000000000000000', 10); // 15 DANDER
-
-      let error;
-
-      try {
-        await dandercoin.mint(minterAccount, amount, {
-          from: minterAccount,
-        });
-      } catch (e) {
-        error = e;
-      } finally {
-        assert.ok(
-          error?.message.includes('Global mint capacity exceeded'),
-          'Transaction succeeded when it should have failed',
-        );
-      }
-    });
-
-    it('should allow the admin account to revoke the minter account', async () => {
-      const dandercoin = await Dandercoin.deployed();
-
-      const newLimit = new BN('0', 10); // 0 DANDER/year
-      await dandercoin.authorizeMinter(minterAccount, newLimit);
-      const setLimit = await dandercoin.yearlyMintLimitOf(minterAccount);
-
-      assert.equal(
-        setLimit.toString(),
-        newLimit.toString(),
-        'Mint limit was not set successfully',
-      );
     });
 
     it('should prevent an account with no permissions from minting', async () => {
@@ -169,14 +127,14 @@ module.exports = (accounts) =>
       let error;
 
       try {
-        await dandercoin.mint(minterAccount, amount, {
-          from: minterAccount,
+        await dandercoin.mint(receiverAccount, amount, {
+          from: receiverAccount,
         });
       } catch (e) {
         error = e;
       } finally {
         assert.ok(
-          error?.message.includes('Local mint capacity exceeded'),
+          error?.message.includes('Insufficient permissions'),
           'Transaction succeeded when it should have failed',
         );
       }

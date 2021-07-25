@@ -1,12 +1,18 @@
 const HDWalletProvider = require('@truffle/hdwallet-provider');
 
 const testnetMnemonic =
-  'oppose fortune truck cross crouch lens twist device flight doctor immense setup';
+  'alcohol tongue theme boss noble another bless picnic fire assist prevent sweet';
 
 module.exports = {
   compilers: {
     solc: {
       version: 'native',
+      settings: {
+        optimizer: {
+          enabled: true,
+          runs: 200,
+        },
+      },
     },
   },
   networks: {

@@ -3,7 +3,7 @@
   "scripts": {
     "build": "truffle compile",
     "extract": "node ./scripts/extract.mjs",
-    "devchain": "ganache-cli --chainId 1337 -a 2 -m 'genuine remain eagle depart water trick purse peace limit series piano congress' -h 0.0.0.0",
+    "devchain": "ganache-cli --chainId 1337 -a 3 -m 'genuine remain eagle depart water trick purse peace limit series piano congress' -h 0.0.0.0",
     "migrate": "truffle migrate",
     "migrate:testnet": "truffle migrate --network test",
     "test": "truffle test"

@@ -40,6 +40,12 @@ resource "github_actions_secret" "ethereum_chain_id" {
   plaintext_value = var.ethereum_chain_id
 }
 
+resource "github_actions_secret" "governor_contract_address" {
+  repository      = var.github_repository
+  secret_name     = "${upper(terraform.workspace)}_GOVERNOR_CONTRACT_ADDRESS"
+  plaintext_value = var.governor_contract_address
+}
+
 resource "github_actions_secret" "identity_api_endpoint" {
   repository      = var.github_repository
   secret_name     = "${upper(terraform.workspace)}_IDENTITY_API_ENDPOINT"
@@ -68,4 +74,10 @@ resource "github_actions_secret" "origin_response_function_arn" {
   repository      = var.github_repository
   secret_name     = "${upper(terraform.workspace)}_AWS_ORIGIN_RESPONSE_FUNCTION_ARN"
   plaintext_value = module.web.origin_response_function_arn
+}
+
+resource "github_actions_secret" "timelock_contract_address" {
+  repository      = var.github_repository
+  secret_name     = "${upper(terraform.workspace)}_TIMELOCK_CONTRACT_ADDRESS"
+  plaintext_value = var.timelock_contract_address
 }
