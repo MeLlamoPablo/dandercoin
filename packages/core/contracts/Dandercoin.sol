@@ -33,7 +33,7 @@ contract Dandercoin is AccessControl, ERC20VotesComp, MintControl {
     _burn(_msgSender(), amount);
   }
 
-  function _canAuthorizeMinter(address account) internal view override returns (bool) {
+  function _canMint(address account) internal view override returns (bool) {
     return hasRole(DEFAULT_ADMIN_ROLE, account);
   }
 

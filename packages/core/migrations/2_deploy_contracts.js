@@ -30,7 +30,6 @@ async function deployToken(deployer, network, accounts) {
     const defaultAdminRole = await dandercoin.DEFAULT_ADMIN_ROLE();
 
     await dandercoin.grantRole(defaultAdminRole, newOwner);
-    await dandercoin.authorizeMinter(newOwner, MAX_GLOBAL_INFLATION);
 
     if (network !== 'development') {
       await dandercoin.revokeRole(defaultAdminRole, accounts[0]);
