@@ -66,13 +66,13 @@ resource "github_actions_secret" "identity_oracle_contract_address" {
 
 resource "github_actions_secret" "origin_request_function_arn" {
   repository      = var.github_repository
-  secret_name     = "${upper(terraform.workspace)}_AWS_ORIGIN_REQUEST_FUNCTION_ARN"
+  secret_name     = "${upper(terraform.workspace)}_AWS_LAMBDA_ORIGIN_REQUEST_FUNCTION_ARN"
   plaintext_value = module.web.origin_request_function_arn
 }
 
 resource "github_actions_secret" "origin_response_function_arn" {
   repository      = var.github_repository
-  secret_name     = "${upper(terraform.workspace)}_AWS_ORIGIN_RESPONSE_FUNCTION_ARN"
+  secret_name     = "${upper(terraform.workspace)}_AWS_LAMBDA_ORIGIN_RESPONSE_FUNCTION_ARN"
   plaintext_value = module.web.origin_response_function_arn
 }
 

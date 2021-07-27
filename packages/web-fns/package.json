@@ -1,18 +1,22 @@
 {
   "name": "@dandercoin/web-fns",
   "scripts": {
-    "build": "webpack"
+    "build": "webpack",
+    "deploy": "node scripts/deploy.mjs"
   },
   "dependencies": {
     "common-tags": "^1.8.0"
   },
   "devDependencies": {
+    "@aws-sdk/client-cloudfront": "^3.23.0",
+    "@aws-sdk/client-lambda": "^3.23.0",
     "@types/aws-lambda": "^8.10.76",
     "@types/common-tags": "^1.8.0",
     "@types/node": "^15.0.1",
     "@types/webpack": "^5.28.0",
     "execa": "^5.0.0",
     "express": "^4.17.1",
+    "immer": "^9.0.5",
     "ts-loader": "^9.1.1",
     "typescript": "*",
     "webpack": "^5.36.0",

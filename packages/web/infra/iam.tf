@@ -47,6 +47,36 @@ data "aws_iam_policy_document" "deploy" {
       "arn:aws:s3:::${aws_s3_bucket.main.bucket}/*",
     ]
   }
+
+  statement {
+    sid = "UpdateLambdaAssociations"
+
+    actions = [
+      "cloudfront:GetDistribution",
+      "cloudfront:UpdateDistribution",
+    ]
+
+    resources = [aws_cloudfront_distribution.main.arn]
+  }
+
+  statement {
+    sid = "UpdateLambdaFunctions"
+
+    actions = [
+      "lambda:EnableReplication",
+      "lambda:GetFunction",
+      "lambda:PublishVersion",
+      "lambda:UpdateFunctionCode",
+    ]
+
+    resources = [
+      aws_lambda_function.origin_request_event.arn,
+      aws_lambda_function.origin_response_event.arn,
+      # Allow to retrieve versions in addition to functions
+      "${aws_lambda_function.origin_request_event.arn}:*",
+      "${aws_lambda_function.origin_response_event.arn}:*",
+    ]
+  }
 }
 
 resource "aws_iam_policy" "deploy" {
