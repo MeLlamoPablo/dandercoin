@@ -1,9 +1,11 @@
 import type BN from 'bn.js';
 import Web3 from 'web3';
 
-export function formatWeiAmount(input: BN) {
+export function parseWeiAmount(input: BN) {
   const etherString = Web3.utils.fromWei(input, 'ether');
-  const etherNumber = Number.parseFloat(etherString);
+  return Number.parseFloat(etherString);
+}
 
-  return `${etherNumber} DANDER`;
+export function formatWeiAmount(input: BN) {
+  return `${parseWeiAmount(input)} DANDER`;
 }

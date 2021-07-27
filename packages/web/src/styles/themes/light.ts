@@ -1,6 +1,7 @@
 const light = {
   colors: {
     bdazzledBlue: '#345995',
+    bdazzledBlue70: '#345995b3',
     black: '#000000',
     black70: '#000000b3',
     cultured: '#f5f5f5',

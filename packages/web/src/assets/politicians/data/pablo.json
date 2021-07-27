@@ -1,0 +1,11 @@
+{
+  "prefix": "Don",
+  "name": "Pablo R. Caballero",
+  "image": "pablo.jpg",
+  "description": "Soy Pablo, el fundador de Dandercoin. Conmigo, sabes que tus votos están en buenas manos. Mi propósito es llevar Dandercoin a la gloria para derrocar a la tiranía que gobierna Z1 y devolverle al pueblo el control de lo que es suyo. ¡Delégame tus DANDER y no te arrepentirás! Foto: Javier Pereira Luna.",
+  "networks": [
+    { "address": "0xb357226Bf760A1cc9CE6C4731b01595102451b02", "chainId": 137 },
+    { "address": "0x025638cA55E30424fdEe6C04AadE318a9f59Da21", "chainId":  1337 },
+    { "address": "0xb357226Bf760A1cc9CE6C4731b01595102451b02", "chainId":  80001 }
+  ]
+}

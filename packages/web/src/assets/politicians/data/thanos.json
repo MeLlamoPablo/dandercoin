@@ -1,0 +1,9 @@
+{
+  "prefix": "Mad Titan",
+  "name": "Thanos",
+  "image": "thanos.jpg",
+  "description": "Thanos was a genocidal warlord from Titan, whose own main objective was to bring stability to the universe by wiping out half of all life at every level, as he believed its massive population would inevitably use up the universe's entire supply of resources and condemn this.",
+  "networks": [
+    { "address": "0xDa1931Aa98D68965e225C9505DaD63fde3EA0818", "chainId":  1337 }
+  ]
+}
