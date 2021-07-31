@@ -18,7 +18,9 @@ export const Avatar = styled.img`
 
 export const Email = styled.span`
   display: block;
-  padding-left: 0.5rem;
+  padding: 0 0.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 export const Address = styled.span`

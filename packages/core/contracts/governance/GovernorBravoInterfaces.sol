@@ -159,4 +159,5 @@ interface TimelockInterface {
 
 interface CompInterface {
   function getPriorVotes(address account, uint blockNumber) external view returns (uint96);
+  function totalSupply() external view returns (uint256);
 }

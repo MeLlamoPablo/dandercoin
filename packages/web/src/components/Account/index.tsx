@@ -15,9 +15,9 @@ const Account: FC<Props> = ({ address, email }) => {
       rel="noreferrer noopener"
       target="_blank"
     >
-      <Avatar src={gravatar(email, 120)} alt={email} />
-      <Email>{email}</Email>
-      <Address>{shortAddress}</Address>
+      <Avatar src={gravatar(email ?? address, 120)} alt={email ?? address} />
+      <Email>{email ?? address}</Email>
+      {email && <Address>{shortAddress}</Address>}
     </Container>
   );
 };

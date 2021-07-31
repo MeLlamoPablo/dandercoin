@@ -68,7 +68,8 @@ contract Distributor {
   }
 
   /**
-   * Allows anyone to claim DANDER tokens on behalf of any verified account.
+   * Allows anyone to burn DANDER tokens of any account who didn't claim them
+   * in time.
    */
   function burnFor(bytes32 emailHash) public {
     uint256 balance = getClaimableBalanceByEmail(emailHash);

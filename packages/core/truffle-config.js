@@ -1,7 +1,6 @@
+const { readFileSync } = require('fs');
+const { join } = require('path');
 const HDWalletProvider = require('@truffle/hdwallet-provider');
-
-const testnetMnemonic =
-  'alcohol tongue theme boss noble another bless picnic fire assist prevent sweet';
 
 module.exports = {
   compilers: {
@@ -22,10 +21,15 @@ module.exports = {
       network_id: '*',
     },
     test: {
+      networkCheckTimeout: 60000,
       provider: () =>
         new HDWalletProvider({
-          mnemonic: testnetMnemonic,
-          providerOrUrl: 'https://rpc-mumbai.maticvigil.com',
+          mnemonic: readFileSync(
+            join(__dirname, 'keys/staging.txt'),
+            'utf-8',
+          ).trim(),
+          providerOrUrl:
+            'https://polygon-mumbai.infura.io/v3/54d6cf2676ea4e8dab655d85bd3c9f4f',
         }),
       gasPrice: 1000000000,
       network_id: 80001,

@@ -17,7 +17,7 @@ contract GovernorBravo is GovernorBravoStorage, GovernorBravoEvents {
   uint public constant MAX_PROPOSAL_THRESHOLD = 100000e18; //100,000 Comp
 
   /// @notice The minimum setable voting period
-  uint public constant MIN_VOTING_PERIOD = 43200; // About 24 hours
+  uint public constant MIN_VOTING_PERIOD = 1; // About 24 hours
 
   /// @notice The max setable voting period
   uint public constant MAX_VOTING_PERIOD = 302400; // About 2 weeks
@@ -27,9 +27,6 @@ contract GovernorBravo is GovernorBravoStorage, GovernorBravoEvents {
 
   /// @notice The max setable voting delay
   uint public constant MAX_VOTING_DELAY = 151200; // About 1 week
-
-  /// @notice The number of votes in support of a proposal required in order for a quorum to be reached and for a vote to succeed
-  uint public constant quorumVotes = 30000e18; // 30,000
 
   /// @notice The maximum number of actions that can be included in a proposal
   uint public constant proposalMaxOperations = 10; // 10 actions
@@ -174,6 +171,14 @@ contract GovernorBravo is GovernorBravoStorage, GovernorBravoEvents {
   }
 
   /**
+    * @notice Returns the number of votes in support of a proposal required in order for a quorum to be reached and for a vote to succeed
+    */
+  function quorumVotes() public view returns (uint) {
+    // 4% of supply needed to reach quorum
+    return comp.totalSupply() / 25;
+  }
+
+  /**
     * @notice Gets the state of a proposal
     * @param proposalId The id of the proposal
     * @return Proposal state
@@ -187,7 +192,7 @@ contract GovernorBravo is GovernorBravoStorage, GovernorBravoEvents {
       return ProposalState.Pending;
     } else if (block.number <= proposal.endBlock) {
       return ProposalState.Active;
-    } else if (proposal.forVotes <= proposal.againstVotes || proposal.forVotes < quorumVotes) {
+    } else if (proposal.forVotes <= proposal.againstVotes || proposal.forVotes < quorumVotes()) {
       return ProposalState.Defeated;
     } else if (proposal.eta == 0) {
       return ProposalState.Succeeded;

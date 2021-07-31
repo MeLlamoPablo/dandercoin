@@ -1,12 +1,15 @@
 import { useCallback } from 'react';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 
 import useWallet from '$/api/hooks/wallet/useWallet';
 import useWeb3 from '$/api/hooks/wallet/useWeb3';
+import { GET_DANDER_DELEGATE_QUERY_KEY } from '$/api/queries/dander/getDanderDelegate';
+import { GET_VOTES_QUERY_KEY } from '$/api/queries/dander/getVotes';
 import useDelegateMutation from '$/api/mutations/governance/delegate';
 import useProposeMutation from '$/api/mutations/governance/propose';
 
 export default function useGovernanceActions() {
+  const client = useQueryClient();
   const { data: { account } = {} } = useWallet();
   const { web3 } = useWeb3();
 
@@ -14,7 +17,18 @@ export default function useGovernanceActions() {
     isLoading: isDelegateLoading,
     isSuccess: isDelegateSuccess,
     mutate: performDelegate,
-  } = useMutation(useDelegateMutation());
+  } = useMutation(useDelegateMutation(), {
+    onSettled: async (_, __, variables) => {
+      await Promise.all([
+        client.invalidateQueries(
+          GET_DANDER_DELEGATE_QUERY_KEY({ account: variables.from }),
+        ),
+        client.invalidateQueries(
+          GET_VOTES_QUERY_KEY({ account: variables.to }),
+        ),
+      ]);
+    },
+  });
 
   const delegate = useCallback(
     (to: string) => {

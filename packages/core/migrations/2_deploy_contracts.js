@@ -10,8 +10,7 @@ const StringUtils = artifacts.require('StringUtils');
 const Timelock = artifacts.require('Timelock');
 
 const GOVERNANCE_PROPOSAL_THRESHOLD = '1000000000000000000000'; // 1000 DANDER
-const GOVERNANCE_VOTING_PERIOD =
-  (2 * 24 * 60 * 60) /* 2 days */ / 2; /* 2s block time */
+const GOVERNANCE_VOTING_PERIOD = 300;
 const GOVERNANCE_VOTING_DELAY = 1; // Instant
 const INITIAL_SUPPLY = '50000000000000000000000'; // 50000 DANDER
 const MAX_GLOBAL_INFLATION = '100000000000000000000000'; // 100000 DANDER
