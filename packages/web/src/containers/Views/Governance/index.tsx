@@ -1,3 +1,5 @@
+import ProposalCard from '$/components/ProposalCard';
+
 import useConnect from './connect';
 import Politician from './Politician';
 import {
@@ -6,14 +8,28 @@ import {
   SelfDelegate,
   SelfDelegateText,
   SelfDelegateButton,
+  Title,
 } from './styles';
 import type { Props } from './types';
 
 function Bank({ politicians }: Props): JSX.Element {
-  const { handle, isSelfDelegating } = useConnect();
+  const { handle, isSelfDelegating, proposals, url } = useConnect();
 
   return (
     <Container>
+      <Title>Últimas propuestas</Title>
+      <div>
+        {proposals.map((proposal) => (
+          <ProposalCard
+            id={proposal.id}
+            key={proposal.id}
+            state={proposal.state}
+            title={proposal.title}
+            url={url}
+          />
+        ))}
+      </div>
+      <Title>Políticos</Title>
       <Politicians>
         {politicians.map((politician) => (
           <Politician key={politician.address} politician={politician} />

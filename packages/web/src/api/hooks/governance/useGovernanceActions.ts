@@ -51,6 +51,7 @@ export default function useGovernanceActions() {
     ({
       actions,
       description,
+      title,
     }: {
       actions: ReadonlyArray<{
         functionName: string;
@@ -61,6 +62,7 @@ export default function useGovernanceActions() {
         target: string;
       }>;
       description: string;
+      title: string;
     }) => {
       if (!account || !web3) {
         return;
@@ -91,7 +93,7 @@ export default function useGovernanceActions() {
             value: 0,
           };
         }),
-        description,
+        description: JSON.stringify([title, description]),
         from: account,
       });
     },

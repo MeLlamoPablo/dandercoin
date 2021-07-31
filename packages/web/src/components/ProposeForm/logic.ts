@@ -40,25 +40,6 @@ const presets: readonly Preset[] = [
     ],
   },
   {
-    name: 'Autorizar minter',
-    value: [
-      {
-        functionName: 'authorizeMinter',
-        parameters: [
-          {
-            type: 'address',
-            value: '(address of new minter)',
-          },
-          {
-            type: 'uint256',
-            value: '(mint limit in wey/year)',
-          },
-        ],
-        target: process.env.NEXT_PUBLIC_DANDERCOIN_CONTRACT_ADDRESS,
-      },
-    ],
-  },
-  {
     name: 'Mintear',
     value: [
       {
