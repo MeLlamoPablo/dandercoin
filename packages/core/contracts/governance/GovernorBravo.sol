@@ -89,6 +89,7 @@ contract GovernorBravo is GovernorBravoStorage, GovernorBravoEvents {
 
     proposalCount++;
 
+    proposals[proposalCount].id = proposalCount;
     proposals[proposalCount].proposer = msg.sender;
     proposals[proposalCount].targets = targets;
     proposals[proposalCount].values = values;
