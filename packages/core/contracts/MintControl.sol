@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.6;
+pragma solidity ^0.8.7;
 
 /**
  * @dev Contract module that allows children ERC20 tokens to implement

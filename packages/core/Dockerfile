@@ -20,7 +20,7 @@ RUN echo '#!/usr/bin/env bash' > /usr/local/bin/yarn && \
     echo '"$(ls .yarn/releases/*.cjs)" "$@"' >> /usr/local/bin/yarn && \
     chmod +x /usr/local/bin/yarn
 
-COPY --from=ethereum/solc:0.8.6 /usr/bin/solc /usr/bin/solc
+COPY --from=ethereum/solc:0.8.7 /usr/bin/solc /usr/bin/solc
 
 WORKDIR /app
 
