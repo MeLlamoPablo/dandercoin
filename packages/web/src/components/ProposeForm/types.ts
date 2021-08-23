@@ -12,6 +12,7 @@ export type Action = Readonly<{
 export type FormModel = Readonly<{
   actions: readonly Action[];
   description: string;
+  title: string;
 }>;
 
 export type Props = {

@@ -17,6 +17,10 @@ export default function ProposeForm({ hash, onSubmit }: Props) {
   return (
     <Container onSubmit={handleSubmit(onSubmit)}>
       <InputGroup>
+        <Label htmlFor="title">Título</Label>
+        <input id="title" {...register('title')} />
+      </InputGroup>
+      <InputGroup>
         <Label htmlFor="description">Descripción</Label>
         <textarea id="description" {...register('description')} />
       </InputGroup>

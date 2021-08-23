@@ -5,6 +5,8 @@ import MainLayout from '$/containers/Layouts/Main';
 
 export const Container = styled(MainLayout)``;
 
+export const Title = styled.h2``;
+
 export const Politicians = styled.div`
   display: flex;
   flex-wrap: wrap;
