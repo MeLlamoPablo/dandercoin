@@ -33,9 +33,22 @@ function normalizeProposalState(input: string) {
 }
 
 export type Proposal = {
+  abstainVotes: string;
+  againstVotes: string;
+  endBlock: number;
+  forVotes: string;
   id: number;
+  startBlock: number;
   state: ReturnType<typeof normalizeProposalState>;
 };
+
+function tryJSONParse(input: string): any {
+  try {
+    return JSON.parse(input);
+  } catch (e) {
+    return undefined;
+  }
+}
 
 export default function useGetProposalQuery(): QueryFunction<
   Proposal | undefined,
@@ -47,15 +60,34 @@ export default function useGetProposalQuery(): QueryFunction<
     async ({ queryKey: [, proposalId] }) => {
       const Governor = await getGovernorContract();
 
-      // Adding 1 because the first proposal is empty, and we subtract 1 in
-      // getProposalCount
-      const proposal = await Governor?.methods.proposals(proposalId + 1).call();
-      const state = await Governor?.methods.state(proposalId + 1).call();
+      try {
+        // Adding 1 because the first proposal is empty, and we subtract 1 in
+        // getProposalCount
+        const proposal = await Governor?.methods
+          .proposals(proposalId + 1)
+          .call();
+        const state = await Governor?.methods.state(proposalId + 1).call();
 
-      return {
-        id: +proposal.id - 1,
-        state: normalizeProposalState(state),
-      };
+        return {
+          abstainVotes: proposal.abstainVotes,
+          againstVotes: proposal.againstVotes,
+          endBlock: +proposal.endBlock,
+          forVotes: proposal.forVotes,
+          id: +proposal.id - 1,
+          startBlock: +proposal.startBlock,
+          state: normalizeProposalState(state),
+        };
+      } catch (e) {
+        if (
+          tryJSONParse(
+            e.message.replace('Internal JSON-RPC error.', '').trim(),
+          )?.message.includes('GovernorBravo::state: invalid proposal id')
+        ) {
+          throw 'not-found';
+        }
+
+        throw e;
+      }
     },
     [getGovernorContract],
   );
