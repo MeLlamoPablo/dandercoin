@@ -4,9 +4,12 @@ import { useMutation, useQueryClient } from 'react-query';
 import useWallet from '$/api/hooks/wallet/useWallet';
 import useWeb3 from '$/api/hooks/wallet/useWeb3';
 import { GET_DANDER_DELEGATE_QUERY_KEY } from '$/api/queries/dander/getDanderDelegate';
+import { GET_PROPOSAL_QUERY_KEY } from '$/api/queries/governance/getProposal';
 import { GET_VOTES_QUERY_KEY } from '$/api/queries/dander/getVotes';
 import useDelegateMutation from '$/api/mutations/governance/delegate';
 import useProposeMutation from '$/api/mutations/governance/propose';
+import useVoteMutation from '$/api/mutations/governance/vote';
+import { GET_VOTE_RECEIPT_QUERY_KEY } from '../../queries/governance/getVoteReceipt';
 
 export default function useGovernanceActions() {
   const client = useQueryClient();
@@ -100,10 +103,49 @@ export default function useGovernanceActions() {
     [account, performPropose, web3],
   );
 
+  const { isLoading: isVoteLoading, mutate: performVote } = useMutation(
+    useVoteMutation(),
+    {
+      onSettled: async (_, __, variables) => {
+        await Promise.all([
+          client.invalidateQueries(
+            GET_PROPOSAL_QUERY_KEY({ proposalId: variables.proposalId }),
+          ),
+          client.invalidateQueries(
+            GET_VOTE_RECEIPT_QUERY_KEY({
+              account: variables.from,
+              proposalId: variables.proposalId,
+            }),
+          ),
+        ]);
+      },
+    },
+  );
+
+  const vote = useCallback(
+    ({
+      reason,
+      proposalId,
+      type,
+    }: {
+      reason: string;
+      proposalId: number;
+      type: 'for' | 'against' | 'abstain';
+    }) => {
+      if (!account) {
+        return;
+      }
+
+      performVote({ from: account, reason, proposalId, type });
+    },
+    [account, performVote],
+  );
+
   return {
     delegate,
-    isLoading: isDelegateLoading || isProposeLoading,
+    isLoading: isDelegateLoading || isProposeLoading || isVoteLoading,
     isSuccess: isDelegateSuccess || isProposeSuccess,
     propose,
+    vote,
   };
 }
