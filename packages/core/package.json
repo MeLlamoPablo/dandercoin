@@ -13,10 +13,10 @@
     "ethereumjs-util": "^7.0.10"
   },
   "devDependencies": {
-    "@truffle/hdwallet-provider": "^1.2.6",
+    "@truffle/hdwallet-provider": "^1.5.0",
     "@types/bn.js": "^5.1.0",
     "bn.js": "^5.2.0",
     "ganache-cli": "^6.12.2",
-    "truffle": "^5.3.2"
+    "truffle": "^5.4.11"
   }
 }
