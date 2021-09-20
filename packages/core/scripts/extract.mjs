@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import {
   mkdir as mkdirCb,
   readFile as readFileCb,
@@ -19,17 +20,26 @@ const mkdir = promisify(mkdirCb);
 const readFile = promisify(readFileCb);
 const writeFile = promisify(writeFileCb);
 
-const PUBLIC_CONTRACTS = ['Dandercoin', 'Distributor', 'GovernorBravo', 'IdentityOracle'];
+const PUBLIC_CONTRACTS = [
+  'Dandercoin',
+  'Distributor',
+  'GovernorBravo',
+  'IdentityOracle',
+];
 
-await mkdir(join(process.cwd(), 'out'), { recursive: true });
+async function main() {
+  await mkdir(join(process.cwd(), 'out'), { recursive: true });
 
-async function processContract(contractName) {
-  const src = join(process.cwd(), 'build/contracts', `${contractName}.json`);
-  const dest = join(process.cwd(), 'out', `${contractName}.abi.json`);
+  async function processContract(contractName) {
+    const src = join(process.cwd(), 'build/contracts', `${contractName}.json`);
+    const dest = join(process.cwd(), 'out', `${contractName}.abi.json`);
 
-  const contract = JSON.parse(await readFile(src, 'utf-8'));
+    const contract = JSON.parse(await readFile(src, 'utf-8'));
 
-  await writeFile(dest, JSON.stringify(contract.abi), 'utf-8');
+    await writeFile(dest, JSON.stringify(contract.abi), 'utf-8');
+  }
+
+  await Promise.all(PUBLIC_CONTRACTS.map(processContract));
 }
 
-await Promise.all(PUBLIC_CONTRACTS.map(processContract));
+main().catch(console.error);

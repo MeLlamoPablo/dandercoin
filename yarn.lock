@@ -1663,7 +1663,9 @@ __metadata:
     "@openzeppelin/contracts": ^4.3.2
     "@truffle/hdwallet-provider": ^1.5.0
     "@types/bn.js": ^5.1.0
+    "@types/csv-parse": ^1.2.2
     bn.js: ^5.2.0
+    csv-parse: ^4.16.3
     ethereumjs-util: ^7.0.10
     ganache-cli: ^6.12.2
     truffle: ^5.4.11
@@ -4498,6 +4500,15 @@ __metadata:
   version: 2.8.10
   resolution: "@types/cors@npm:2.8.10"
   checksum: c3f3d6feee59ff75127fec3030d55c3d5f1adfc07953facdae67c47dcd54c83c46a5e92f08afa53542ec978da38a388697d30731019798cb157c9e96c64ef6c3
+  languageName: node
+  linkType: hard
+
+"@types/csv-parse@npm:^1.2.2":
+  version: 1.2.2
+  resolution: "@types/csv-parse@npm:1.2.2"
+  dependencies:
+    csv-parse: "*"
+  checksum: c6c9a215c2854f850226c28d4d6e9d389afb10d2517db0efd8578e9987bbb8d4a9558cdbf61a02dd07c54bee0a3b01282364a32f41321d0cf283273bf7ead754
   languageName: node
   linkType: hard
 
@@ -8640,6 +8651,13 @@ __metadata:
   version: 3.0.8
   resolution: "csstype@npm:3.0.8"
   checksum: e15233592a2c580fd72c4346a5c921044b8f4f29bcb81628a81199c4d6a91eb8f8e4875f440ef9c990e85f179a3370f3b842fe55e4743119ad0ce712519e7123
+  languageName: node
+  linkType: hard
+
+"csv-parse@npm:*, csv-parse@npm:^4.16.3":
+  version: 4.16.3
+  resolution: "csv-parse@npm:4.16.3"
+  checksum: ba740ff2dbeb78c847d6c1d9a00ae9d071a353beea4852307bc2a3df1c422ae7e134a24e0cca524068701c40ed59f545de8f876c3f5705ef6a5f340777a9083e
   languageName: node
   linkType: hard
 
