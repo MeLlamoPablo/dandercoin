@@ -39,10 +39,8 @@ async function deployToken(deployer, network, accounts) {
 }
 
 async function deployDistribution(deployer, network, accounts) {
-  await deployer.deploy(Identity);
   await deployer.deploy(StringUtils);
 
-  await deployer.link(Identity, IdentityOracle);
   await deployer.link(StringUtils, IdentityOracle);
 
   await deployer.deploy(IdentityOracle);

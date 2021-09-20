@@ -1667,6 +1667,7 @@ __metadata:
     ethereumjs-util: ^7.0.10
     ganache-cli: ^6.12.2
     truffle: ^5.4.11
+    truffle-plugin-verify: ^0.5.15
   languageName: unknown
   linkType: soft
 
@@ -6362,6 +6363,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"axios@npm:^0.21.1":
+  version: 0.21.4
+  resolution: "axios@npm:0.21.4"
+  dependencies:
+    follow-redirects: ^1.14.0
+  checksum: e6d42b269b599d36eb13be0671c237781f32e6ae72be824297c55a3e1ce63b22ba4f46bad5ab28da7d3bae50a72637d55c792cf803be1cf9de6a8bcd6d0dcc1a
+  languageName: node
+  linkType: hard
+
 "babel-code-frame@npm:^6.26.0":
   version: 6.26.0
   resolution: "babel-code-frame@npm:6.26.0"
@@ -7758,6 +7768,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"circular@npm:^1.0.5":
+  version: 1.0.5
+  resolution: "circular@npm:1.0.5"
+  checksum: 0b42f96dcf60e93509bc2d5cbd59b63b221de5d718d4d8d61a2a4e4913b45cf4bf3fc38aaa8fdf39dbc49b043be280c41a7469bd70b463a6cae6b47acea6b17b
+  languageName: node
+  linkType: hard
+
 "class-is@npm:^1.1.0":
   version: 1.1.0
   resolution: "class-is@npm:1.1.0"
@@ -7820,10 +7837,36 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cli-logger@npm:^0.5.40":
+  version: 0.5.40
+  resolution: "cli-logger@npm:0.5.40"
+  dependencies:
+    circular: ^1.0.5
+    cli-util: ~1.1.27
+  checksum: 85d2b0a58e84c383f779899cc5ee3726cee80171e5c7529841970131f9691e9990d0a94f85d469aaebe6caa2d310e4c21c978f71d1b12ddabc4b1ff8a25bba96
+  languageName: node
+  linkType: hard
+
+"cli-regexp@npm:~0.1.0":
+  version: 0.1.2
+  resolution: "cli-regexp@npm:0.1.2"
+  checksum: e10a5d3e61351d4f606af6c19445f56f17297d892ce3557cc19143dcad07d5715f904d8607187ae277edaabff3d73048c9da8a9ed64942788dffcae4a3bf13d3
+  languageName: node
+  linkType: hard
+
 "cli-spinners@npm:^2.0.0":
   version: 2.6.0
   resolution: "cli-spinners@npm:2.6.0"
   checksum: 653ba6818e0091d4ad7aa052022f6c6a0df0d4674ff6069f6ae366e6130c1eb91a6c332ddfdd2029d234411632ff6428950aa3311872daf515ce54da498c1357
+  languageName: node
+  linkType: hard
+
+"cli-util@npm:~1.1.27":
+  version: 1.1.27
+  resolution: "cli-util@npm:1.1.27"
+  dependencies:
+    cli-regexp: ~0.1.0
+  checksum: 544942fa2b08b3bf7afc1966bdcac956c4981c0da31300860737373bcf48be1c94adc9cc36d074e5f5d9df0f6c3f46bcc2ea15b954f6599631ca898e1849666e
   languageName: node
   linkType: hard
 
@@ -11135,6 +11178,16 @@ __metadata:
     debug:
       optional: true
   checksum: 9ad74c3b66ad5c32d8c009a2afb4e5c1b9e5dbe1f631419296c21f8e4f9976ed2c52f9a676c4acdd1d7f41a8f17a03dfaa3704993b25b5965eb11bc9dc9a8ef5
+  languageName: node
+  linkType: hard
+
+"follow-redirects@npm:^1.14.0":
+  version: 1.14.4
+  resolution: "follow-redirects@npm:1.14.4"
+  peerDependenciesMeta:
+    debug:
+      optional: true
+  checksum: 93def3c22eba16caa4ff6f6956ccfda5a50e889545b1ba0046194dd8e368ff79ba6ef681b06e6dc7032b50bc93ca59e9441aa8143cb26f43f40a20bbd6374639
   languageName: node
   linkType: hard
 
@@ -18089,7 +18142,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"querystring@npm:^0.2.0":
+"querystring@npm:^0.2.0, querystring@npm:^0.2.1":
   version: 0.2.1
   resolution: "querystring@npm:0.2.1"
   checksum: 59d27ec60ed6f9cd4d8ddf6413c1b8dc624ff3f148ed085267e714c08d931d3dae987bfd1ecc5d75cf8d6708bc1d081341b8745c4383c0e8525c8eb3125959cd
@@ -20824,6 +20877,18 @@ fsevents@~2.1.2:
   version: 1.0.1
   resolution: "trim-right@npm:1.0.1"
   checksum: 8c5441313e1b38b66f8b73f504bcc1c57f520a7064016530321ba5ac9f840a1879228645a8304f67ecb3e2bdb29e250c221fa165ad7ed177e3bc297d2d71057d
+  languageName: node
+  linkType: hard
+
+"truffle-plugin-verify@npm:^0.5.15":
+  version: 0.5.15
+  resolution: "truffle-plugin-verify@npm:0.5.15"
+  dependencies:
+    axios: ^0.21.1
+    cli-logger: ^0.5.40
+    delay: ^5.0.0
+    querystring: ^0.2.1
+  checksum: 685043362168ee7abf9918a5f1e76e76fdded99a1d2e677f4f93303910d87aa719bf02c6fa3d849ef17768890a62b85313417dccc35e9c4be6e3960fed1b1754
   languageName: node
   linkType: hard
 

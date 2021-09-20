@@ -31,8 +31,13 @@ module.exports = {
           providerOrUrl:
             'https://polygon-mumbai.infura.io/v3/54d6cf2676ea4e8dab655d85bd3c9f4f',
         }),
+      gas: 4000000,
       gasPrice: 1000000000,
       network_id: 80001,
     },
+  },
+  plugins: ['truffle-plugin-verify'],
+  api_keys: {
+    polygonscan: 'insert_key_here',
   },
 };
