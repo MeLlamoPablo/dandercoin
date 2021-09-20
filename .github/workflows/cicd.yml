@@ -209,6 +209,12 @@ jobs:
             && secrets.PRODUCTION_IDENTITY_ORACLE_CONTRACT_ADDRESS
             || secrets.STAGING_IDENTITY_ORACLE_CONTRACT_ADDRESS
         }}
+      NEXT_PUBLIC_SHOW_WIP: >-
+        ${{
+          github.ref == 'refs/heads/master'
+            && 'false'
+            || 'true'
+        }}
       NEXT_PUBLIC_TIMELOCK_CONTRACT_ADDRESS: >-
         ${{
           github.ref == 'refs/heads/master'

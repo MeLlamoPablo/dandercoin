@@ -4,6 +4,7 @@ import { FaWallet } from 'react-icons/fa';
 
 import logoWebp from '$/assets/images/logo.png?sizes[]=40&sizes[]=80&sizes[]=120&format=webp';
 import logo from '$/assets/images/logo.png?sizes[]=40&sizes[]=80&sizes[]=120';
+import { SHOW_WIP } from '$/config';
 
 import {
   Container,
@@ -35,15 +36,21 @@ const MainLayout: FC<Props> = ({ children, className }) => (
         </Logo>
       </Link>
       <Navigation>
-        <Link href="/bank" passHref>
-          <NavLink>Bank</NavLink>
-        </Link>
-        <Link href="/rankings" passHref>
-          <NavLink>Rankings</NavLink>
-        </Link>
-        <Link href="/governance" passHref>
-          <NavLink>Gobernanza</NavLink>
-        </Link>
+        {SHOW_WIP && (
+          <Link href="/bank" passHref>
+            <NavLink>Bank</NavLink>
+          </Link>
+        )}
+        {SHOW_WIP && (
+          <Link href="/rankings" passHref>
+            <NavLink>Rankings</NavLink>
+          </Link>
+        )}
+        {SHOW_WIP && (
+          <Link href="/governance" passHref>
+            <NavLink>Gobernanza</NavLink>
+          </Link>
+        )}
         <Link href="/account" passHref>
           <NavLink>
             <FaWallet />
