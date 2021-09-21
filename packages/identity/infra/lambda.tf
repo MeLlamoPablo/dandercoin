@@ -40,13 +40,13 @@ data "aws_iam_policy_document" "role_policy" {
 }
 
 resource "aws_iam_role" "function" {
-  name = "${var.app_name}_api_function"
+  name = "${var.app_name}_api_function_${terraform.workspace}"
 
   assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
 }
 
 resource "aws_iam_policy" "function" {
-  name   = "${var.app_name}_api_function"
+  name   = "${var.app_name}_api_function_${terraform.workspace}"
   policy = data.aws_iam_policy_document.role_policy.json
 }
 
@@ -65,7 +65,7 @@ resource "aws_lambda_permission" "api" {
 
 resource "aws_lambda_function" "function" {
   filename      = "../packages/identity/build/lambda_function.zip"
-  function_name = "${var.app_name}_api"
+  function_name = "${var.app_name}_api_${terraform.workspace}"
   handler       = "index.handler"
   role          = aws_iam_role.function.arn
   runtime       = "nodejs12.x"

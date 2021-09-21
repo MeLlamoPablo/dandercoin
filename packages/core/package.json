@@ -7,7 +7,9 @@
     "initial-distribution": "node ./scripts/initialDistribution.mjs",
     "migrate": "truffle migrate",
     "migrate:testnet": "truffle migrate --network test",
+    "migrate:mainnet": "truffle migrate --network mainnet",
     "test": "truffle test",
+    "verify:mainnet": "./scripts/verifyMainnet.sh",
     "verify:testnet": "./scripts/verifyTestnet.sh"
   },
   "dependencies": {

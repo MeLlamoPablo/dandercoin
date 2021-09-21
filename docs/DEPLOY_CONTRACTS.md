@@ -60,7 +60,26 @@ and connect Metamask to Polygonscan.
 
 Call the `setOperator` method and send the transaction.
 
-## 6. Distribute the tokens
+## 6. Set the initial governance parameters
+
+During the deployment, some transactions have to run through the Timelock. In
+order for deployments to be automatic, the Timelock is initially deployed with
+a "delay" value of one second (which makes it pointless), otherwise the
+migrations would take days.
+
+Once the ownership of the Timelock is renounced, the only way to update the
+delay value is through governance. In order to make that easy, the initial
+voting period of the governor contract is also set to a low value.
+
+Therefore, in order to have a functional and secure governance system, a first
+proposal which sets reasonable values must be passed. The following values are
+recommended:
+
+* `Timelock`'s `delay` to `86400` seconds, 24 hours.
+* `GovernorBravo`'s `votingDelay` to `43200` blocks, 24 hours for 2 seconds block time.
+* `GovernorBravo`'s `votingPeriod` to `86400` blocks, 48 hours for 2 seconds block time.
+
+## 7. Distribute the tokens
 
 Update the information in `packages/core/scripts/initialDistribution.csv` and
 run:

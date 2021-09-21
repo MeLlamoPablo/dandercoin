@@ -4,6 +4,6 @@ resource "aws_cloudwatch_log_group" "function" {
 }
 
 resource "aws_cloudwatch_log_group" "api" {
-  name              = "/aws/apigateway/${var.app_name}_api"
+  name              = "/aws/apigateway/${var.app_name}_api_${terraform.workspace}"
   retention_in_days = 7
 }

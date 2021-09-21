@@ -8,11 +8,11 @@ module.exports = (accounts) =>
   describe('Throttled Minting', () => {
     const adminAccount = accounts[0];
     const receiverAccount = accounts[1];
-    const mintLimit = new BN('100000000000000000000000', 10); // 100000 DANDER/year
+    const mintLimit = new BN('50000000000000000000000', 10); // 50000 DANDER/year
 
     it('should allow minting within the limit', async () => {
       const dandercoin = await Dandercoin.deployed();
-      const amount = new BN('50000000000000000000000', 10); // 50000 DANDER
+      const amount = new BN('25000000000000000000000', 10); // 25000 DANDER
 
       const startingBalance = await dandercoin.balanceOf.call(receiverAccount);
       await dandercoin.mint(receiverAccount, amount, {
@@ -69,7 +69,7 @@ module.exports = (accounts) =>
       );
 
       const dandercoin = await Dandercoin.deployed();
-      const amount = new BN('70000000000000000000000', 10); // 70000 DANDER
+      const amount = new BN('48000000000000000000000', 10); // 480000 DANDER
 
       const startingBalance = await dandercoin.balanceOf.call(receiverAccount);
       await dandercoin.mint(receiverAccount, amount, {
