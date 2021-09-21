@@ -75,6 +75,12 @@ module.exports = {
         },
       ],
     },
+    {
+      files: ['*.mjs'],
+      parserOptions: {
+        sourceType: 'module',
+      },
+    },
   ],
   rules: {
     'arrow-body-style': 'warn',

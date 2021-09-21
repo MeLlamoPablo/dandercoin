@@ -11,6 +11,9 @@
       <excludeFolder url="file://$MODULE_DIR$/packages/web/out" />
       <excludeFolder url="file://$MODULE_DIR$/infra/.terraform" />
       <excludeFolder url="file://$MODULE_DIR$/packages/web-fns/build" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/core/out" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/identity/build" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/web/public/images/politicians" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -1,20 +1,29 @@
 {
-	"name": "@dandercoin/core",
-	"scripts": {
-		"build": "truffle compile",
-		"devchain": "ganache-cli -a 2 -m 'pony column wait rubber admit control father glance mango engage recall orange' -h 0.0.0.0",
-		"migrate": "truffle migrate",
-		"migrate:testnet": "truffle migrate --network test",
-		"test": "truffle test"
-	},
-	"dependencies": {
-		"@openzeppelin/contracts": "^4.0.0"
-	},
-	"devDependencies": {
-		"@truffle/hdwallet-provider": "^1.2.6",
-		"@types/bn.js": "^5.1.0",
-		"bn.js": "^5.2.0",
-		"ganache-cli": "^6.12.2",
-		"truffle": "^5.3.2"
-	}
+  "name": "@dandercoin/core",
+  "scripts": {
+    "build": "truffle compile",
+    "extract": "node ./scripts/extract.mjs",
+    "devchain": "ganache-cli --chainId 1337 -a 3 -m 'genuine remain eagle depart water trick purse peace limit series piano congress' -h 0.0.0.0",
+    "initial-distribution": "node ./scripts/initialDistribution.mjs",
+    "migrate": "truffle migrate",
+    "migrate:testnet": "truffle migrate --network test",
+    "migrate:mainnet": "truffle migrate --network mainnet",
+    "test": "truffle test",
+    "verify:mainnet": "./scripts/verifyMainnet.sh",
+    "verify:testnet": "./scripts/verifyTestnet.sh"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.3.2",
+    "ethereumjs-util": "^7.0.10"
+  },
+  "devDependencies": {
+    "@truffle/hdwallet-provider": "^1.5.0",
+    "@types/bn.js": "^5.1.0",
+    "@types/csv-parse": "^1.2.2",
+    "bn.js": "^5.2.0",
+    "csv-parse": "^4.16.3",
+    "ganache-cli": "^6.12.2",
+    "truffle": "^5.4.11",
+    "truffle-plugin-verify": "^0.5.15"
+  }
 }

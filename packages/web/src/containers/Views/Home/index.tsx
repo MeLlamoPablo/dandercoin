@@ -1,40 +1,25 @@
 import type { FC } from 'react';
 
-import logoWebp from '$/assets/images/logo.png?sizes[]=500&sizes[]=750&sizes[]=1181&format=webp';
-import logo from '$/assets/images/logo.png?sizes[]=500&sizes[]=750&sizes[]=1181';
+import heroWebp from '$/assets/images/la-liberte-guidant-le-peuple.png?sizes[]=880&sizes[]=1760&sizes[]=2640&format=webp';
+import hero from '$/assets/images/la-liberte-guidant-le-peuple.png?sizes[]=880&sizes[]=1760&sizes[]=2640';
 
-import {
-  Container,
-  Content,
-  Logo,
-  Subtitle,
-  Teaser,
-  TeaserSection,
-  Title,
-  TitleSection,
-} from './styles';
+import { Container, Hero, MainParagraph } from './styles';
 
 const HomeView: FC = () => (
   <Container>
-    <Content>
-      <picture>
-        <source srcSet={logoWebp.srcSet} type="image/webp" />
-        <Logo
-          src={logo.src}
-          srcSet={logo.srcSet}
-          alt="Dandercoin"
-          height={logo.height}
-          width={logo.width}
-        />
-      </picture>
-      <TitleSection>
-        <Title>Dandercoin</Title>
-        <Subtitle>La moneda del pueblo</Subtitle>
-      </TitleSection>
-      <TeaserSection>
-        <Teaser>Coming Soon™</Teaser>
-      </TeaserSection>
-    </Content>
+    <Hero img={hero} imgWebp={heroWebp} title="La moneda del pueblo" />
+    <MainParagraph>
+      Dandercoin es una criptomoneda transparente, segura, y escalable creada{' '}
+      por y para el pueblo, desplegada en la red{' '}
+      <a
+        href="https://polygon.technology/"
+        rel="noreferrer noopeneer"
+        target="_blank"
+      >
+        Polygon
+      </a>
+      .
+    </MainParagraph>
   </Container>
 );
 

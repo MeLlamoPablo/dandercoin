@@ -6,17 +6,9 @@ export const handler: CloudFrontRequestHandler = async (event) => {
   const uri = event.Records[0]?.cf.request.uri;
 
   return {
-    //status: '308',
-    //statusDescription: 'Permanent Redirect',
-    status: '301',
-    statusDescription: 'Found',
+    status: '307',
+    statusDescription: 'Temporary Redirect',
     headers: {
-      'cache-control': [
-        {
-          key: 'Cache-Control',
-          value: 'max-age=63072000',
-        },
-      ],
       location: [
         {
           key: 'Location',

@@ -8,7 +8,7 @@
     "packages/*"
   ],
   "scripts": {
-    "lint": "eslint packages/core/*.js packages/core/migrations/**/*.js packages/core/test/**/*.js packages/web/**/*.ts packages/web/**/*.tsx .*.js --max-warnings=0",
+    "lint": "eslint packages/core/*.js packages/core/migrations/**/*.js packages/core/test/**/*.js packages/core/scripts/*.mjs packages/identity/*.js packages/web/*.js packages/identity/src/**/*.ts packages/web/src/**/*.ts packages/web/src/**/*.tsx --max-warnings=0",
     "lint:fix": "yarn lint --fix"
   },
   "devDependencies": {
