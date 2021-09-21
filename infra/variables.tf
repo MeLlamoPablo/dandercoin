@@ -33,4 +33,8 @@ variable "use_route53" {
   description = "If true, automatically create the Route 53 records (the AWS account must have a hosted zone for 'base_domain'). Otherwise they must be manually created. In that case, the Terraform plan will create the certificates but the creation of some resources will fail as they are invalid. They must be manually validated, and the Terraform plan must be re-attempted."
 }
 
+variable "sendgrid_api_key" {
+  sensitive = true
+}
+
 variable "timelock_contract_address" {}

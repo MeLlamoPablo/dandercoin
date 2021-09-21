@@ -1678,6 +1678,7 @@ __metadata:
   resolution: "@dandercoin/identity@workspace:packages/identity"
   dependencies:
     $: "link:./src"
+    "@sendgrid/mail": ^7.4.6
     "@types/body-parser": ^1
     "@types/common-tags": ^1.8.0
     "@types/cors": ^2.8.10
@@ -3404,6 +3405,35 @@ __metadata:
   version: 3.0.4
   resolution: "@repeaterjs/repeater@npm:3.0.4"
   checksum: 45e4afba3e8756e585c3807452596349b8c2d085546558e2eb13dd6de37ae0e6a235abda3feecfd955a32ae1db6194eafa78a91788d1506f35b4fb51e482974b
+  languageName: node
+  linkType: hard
+
+"@sendgrid/client@npm:^7.4.6":
+  version: 7.4.6
+  resolution: "@sendgrid/client@npm:7.4.6"
+  dependencies:
+    "@sendgrid/helpers": ^7.4.6
+    axios: ^0.21.1
+  checksum: 1ea95a779c2a789c8c7e0d9aee105f53bf6037159abc37ff819c78fe25a2aa1614625135b80c34a748a05dacdfab9b28d85367949dbee93638c0d27ecc4ad865
+  languageName: node
+  linkType: hard
+
+"@sendgrid/helpers@npm:^7.4.6":
+  version: 7.4.6
+  resolution: "@sendgrid/helpers@npm:7.4.6"
+  dependencies:
+    deepmerge: ^4.2.2
+  checksum: ec0e8ee01f796f9bde3b6519a063f6cbc226fcd0d64b5d14e7587a6ebd1e93cd011d74f5ddcadee7e65bb43ce6b1b3714fb7bb44a52c66df2d95d30ab34d41e2
+  languageName: node
+  linkType: hard
+
+"@sendgrid/mail@npm:^7.4.6":
+  version: 7.4.6
+  resolution: "@sendgrid/mail@npm:7.4.6"
+  dependencies:
+    "@sendgrid/client": ^7.4.6
+    "@sendgrid/helpers": ^7.4.6
+  checksum: 7cacd44844be34d9f2137e8eae32a392a8907bd1319089eacaf60fee17fa3286bd504bd0ae32560d335cdf2d3e3602c96da9c3c74a49840424d3541889327c3f
   languageName: node
   linkType: hard
 

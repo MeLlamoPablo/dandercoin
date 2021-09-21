@@ -11,20 +11,6 @@ data "aws_iam_policy_document" "assume_role_policy" {
 
 data "aws_iam_policy_document" "role_policy" {
   statement {
-    sid = "SendEmails"
-
-    actions = ["ses:SendEmail"]
-
-    resources = ["*"]
-
-    condition {
-      test     = "StringEquals"
-      variable = "ses:FromAddress"
-      values   = ["no-reply@danderco.in"]
-    }
-  }
-
-  statement {
     actions = [
       "dynamodb:DeleteItem",
       "dynamodb:GetItem",
@@ -91,6 +77,7 @@ resource "aws_lambda_function" "function" {
       ETHEREUM_CHAIN_ID                 = var.ethereum_chain_id
       IDENTITY_ORACLE_ADDRESS           = var.identity_oracle_contract_address
       IDENTITY_SIGNING_KEY              = shell_script.signing_account.output["privateKey"]
+      SENDGRID_API_KEY                  = var.sendgrid_api_key
       WEB_DOMAIN_NAME                   = var.app_domain
     }
   }
