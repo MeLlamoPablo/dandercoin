@@ -5,6 +5,20 @@ const {
   PHASE_PRODUCTION_SERVER,
 } = require('next/constants');
 
+const disableEslintPlugin = (nextConfig = {}) =>
+  Object.assign({}, nextConfig, {
+    phases: [
+      PHASE_DEVELOPMENT_SERVER,
+      PHASE_PRODUCTION_BUILD,
+      PHASE_PRODUCTION_SERVER,
+    ],
+    eslint: {
+      ...nextConfig.eslint,
+      // We don't lint during the build because GitHub actions performs its own lint step
+      ignoreDuringBuilds: true,
+    },
+  });
+
 const loadFontsPlugin = (nextConfig = {}) =>
   Object.assign({}, nextConfig, {
     phases: [
@@ -43,6 +57,11 @@ const loadImagesPlugin = (nextConfig = {}) =>
       PHASE_PRODUCTION_BUILD,
       PHASE_PRODUCTION_SERVER,
     ],
+    images: {
+      ...nextConfig.images,
+      // Apparently Next 11 doesn't like our image loader so we need this option
+      disableStaticImages: true,
+    },
     webpack: (baseConfig, baseOptions) => {
       const config =
         typeof nextConfig.webpack === 'function'
@@ -65,15 +84,8 @@ const loadImagesPlugin = (nextConfig = {}) =>
     },
   });
 
-const webpack5Plugin = (nextConfig = {}) =>
-  Object.assign({}, nextConfig, {
-    future: {
-      webpack5: true,
-    },
-  });
-
 module.exports = withPlugins([
-  [webpack5Plugin],
+  [disableEslintPlugin],
   [loadFontsPlugin],
   [loadImagesPlugin],
 ]);
