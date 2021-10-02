@@ -65,15 +65,7 @@ const loadImagesPlugin = (nextConfig = {}) =>
     },
   });
 
-const webpack5Plugin = (nextConfig = {}) =>
-  Object.assign({}, nextConfig, {
-    future: {
-      webpack5: true,
-    },
-  });
-
 module.exports = withPlugins([
-  [webpack5Plugin],
   [loadFontsPlugin],
   [loadImagesPlugin],
 ]);
