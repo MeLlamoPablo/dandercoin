@@ -24,11 +24,13 @@ function useMetamaskSync({
 
       // Immediately update the cache with the current chain id, just in case
       // the user switched networks outside the app.
-      client.setQueryData<WalletQuery>(GET_WALLET_QUERY_KEY(), (old) => ({
-        account: old?.account,
-        chainId: metamask.chainId,
-        provider: 'metamask',
-      }));
+      if (await metamask?._metamask.isUnlocked()) {
+        client.setQueryData<WalletQuery>(GET_WALLET_QUERY_KEY(), (old) => ({
+          account: old?.account,
+          chainId: metamask.chainId,
+          provider: 'metamask',
+        }));
+      }
 
       metamask?.on?.(
         'accountsChanged',
