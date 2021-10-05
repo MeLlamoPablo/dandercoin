@@ -4,9 +4,7 @@ import sendgrid from '@sendgrid/mail';
 import { EMAIL_SENDER } from '$/config';
 import { env } from './env';
 
-sendgrid.setApiKey(
-  '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',
-); // TODO
+sendgrid.setApiKey(env('SENDGRID_API_KEY'));
 
 const WEB_DOMAIN_NAME = env('WEB_DOMAIN_NAME');
 
